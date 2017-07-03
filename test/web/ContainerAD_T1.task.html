@@ -1,0 +1,122 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>브라우저 테스트</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<body>
+<h1>브라우저 테스트 (콘솔로그 참조)</h1>
+
+<h3> - 부트스트립트 이용</h3>
+<h3> - ds 이용 컨테이너 바인딩 로딩 (기본)</h3>
+
+
+<div></div>
+<!--컨테이너-->
+
+<p id="temp_1"><!--
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td></td>
+            </tr>        
+        </tbody>
+    </table>-->
+</p>
+
+<script src="../../external/LCommon.web.js"></script>
+<script src="../../external/DataSet.js"></script>
+<script src="../../src/DataAD.js"></script>
+<script src="../../src/ContainerAD.js"></script>
+<script>
+
+// 기본 ds 구성
+{
+    // ds 생성
+    var ds = new DataSet("ds");
+
+    // 2방식 : 직접 생성 방식 : 테이블
+    var dt1 = ds.tables.add("body");
+
+    // 2방식 : 직접 생성 방식 : 컬럼
+    ds.tables["body"].columns.add("p1_name");
+    ds.tables["body"].columns.add("p2_name");
+
+    var dr = null;
+
+    dr = dt1.newRow();
+    dr["p1_name"] = '1번내용';
+    dr["p2_name"] = '2번내용';
+    dt1.rows.add(dr);
+
+    dr = dt1.newRow();
+    dr["p1_name"] = '10번내용';
+    dr["p2_name"] = '20번내용';
+    dt1.rows.add(dr);
+
+    dr = dt1.newRow();
+    dr["p1_name"] = '100번내용';
+    dr["p2_name"] = '200번내용';
+    dt1.rows.add(dr);
+
+    var ch1 = ds.getChanges();           // 변경내용 조회
+}
+
+{
+    // var CD = new ContainerAdapter();
+    // var CD_sel = document.querySelector("#temp_1");
+    // CD.putElement = document.querySelector("div");
+
+    // var CD = new ContainerAdapter("div");
+    // var CD_sel = document.querySelector("#temp_1");
+    // CD.template.importTemplate(CD_sel.firstChild);
+    
+    var CD = new ContainerAdapter("div");
+    var template = document.querySelector("#temp_1").firstChild;
+    CD.template.importTemplate(template);
+
+    // // 메인지정안한경우
+    // // CD.template.insertSlot("table", "main_t");   
+
+    CD.insertTable("body", "tbody");    //테이블명, 선택자
+
+    // CD.tables["head"].container = new TemplateElement();
+    var mainElem;   // 테스용
+    // mainElem = common.querySelecotrOuter(CD._original, "*");
+    mainElem = CD.template._original;
+
+    // // head
+    // // select_elem = tempElem.querySelector("thead");
+    // // CD.tables["head"].containerElement.importTemplate(select_elem);
+
+    // // select_elem = mainElem.querySelector("thead tr");
+    // // CD.tables["head"].recordElement.importTemplate(select_elem, "tr");
+
+    // // select_elem = mainElem.querySelector("thead tr th");
+    // // CD.tables["head"].columnElement.importTemplate(select_elem, "th");
+
+    // // CD.update(ds, "head");
+
+    // // body
+    // // select_elem = tempElem.querySelector("tbody");
+    // // CD.tables["body"].containerElement.importTemplate(select_elem);
+
+    select_elem = mainElem.querySelector("tbody tr");
+    CD.tables["body"].recordElement.importTemplate(select_elem, "tr");
+
+    select_elem = mainElem.querySelector("tbody tr td");
+    CD.tables["body"].columnElement.importTemplate(select_elem, "td");
+
+    CD.update(ds, "body");
+}
+
+console.log('-End-');
+</script>
+
+</body>
+</html>
