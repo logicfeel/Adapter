@@ -23,7 +23,7 @@
         </thead>
         <tbody>
             <tr>
-                <td></td>
+                <td><b></b></td>
             </tr>        
         </tbody>
     </table>-->
@@ -87,49 +87,44 @@
 }
 
 {
-    // var CD = new ContainerAdapter();
-    // var CD_sel = document.querySelector("#temp_1");
-    // CD.putElement = document.querySelector("div");
-
-    // var CD = new ContainerAdapter("div");
-    // var CD_sel = document.querySelector("#temp_1");
-    // CD.template.importTemplate(CD_sel.firstChild);
     
     var CD = new ContainerAdapter("div");
     var template = document.querySelector("#temp_1").firstChild;
-    CD.template.importTemplate(template);
+    CD.import(template);
 
     // // 메인지정안한경우
     // // CD.template.insertSlot("table", "main_t");   
 
-    CD.insertTable("body", "tbody");    //테이블명, 선택자
+    CD.setTableSlot("body", "tbody");    //테이블명, 선택자
 
     // CD.tables["head"].container = new TemplateElement();
     var mainElem;   // 테스용
     // mainElem = common.querySelecotrOuter(CD._original, "*");
     mainElem = CD.template._original;
 
-    // // head
-    // // select_elem = tempElem.querySelector("thead");
-    // // CD.tables["head"].containerElement.importTemplate(select_elem);
 
-    // // select_elem = mainElem.querySelector("thead tr");
-    // // CD.tables["head"].recordElement.importTemplate(select_elem, "tr");
+    // 1. 외부 삽입 방식
+    // select_elem = mainElem.querySelector("tbody tr");
+    // CD.tables["body"].record.importSlot(select_elem, "tr");
 
-    // // select_elem = mainElem.querySelector("thead tr th");
-    // // CD.tables["head"].columnElement.importTemplate(select_elem, "th");
+    // select_elem = mainElem.querySelector("tbody tr td");
+    // CD.tables["body"].column.importSlot(select_elem, "td");
 
-    // // CD.update(ds, "head");
+    var subSlot2 = [
+        {
+            name: "p1_name",
+            selector: "b"
+        },
+        {
+            name: "p2_name",
+            selector: "td"
+        }
+    ];
 
-    // // body
-    // // select_elem = tempElem.querySelector("tbody");
-    // // CD.tables["body"].containerElement.importTemplate(select_elem);
-
-    select_elem = mainElem.querySelector("tbody tr");
-    CD.tables["body"].recordElement.importTemplate(select_elem, "tr");
-
-    select_elem = mainElem.querySelector("tbody tr td");
-    CD.tables["body"].columnElement.importTemplate(select_elem, "td");
+    // 2. 컨테이너 템플릿 참조 방식
+    CD.tables["body"].record.setSlot("tr");
+    CD.tables["body"].column.setSlot("td", "td b");
+    // CD.tables["body"].column.setSlot("td", subSlot2);
 
     CD.update(ds, "body");
     
@@ -141,50 +136,42 @@
     var CD2_sel = document.querySelector("#temp_2");
     CD2.putElement = document.querySelector("div");
 
-    CD2.importTemplate(CD2_sel.firstChild);     // 위치 변경
+    CD2.import(CD2_sel.firstChild);     // 위치 변경
     
-    CD2.insertTable("body", "ul");
+    CD2.setTableSlot("body", "ul");
 
     mainElem = CD2.template._original;
 
     var CD2_sel = document.querySelector("#temp_1");
-    // var elem =  document.createElement('span');
-    // elem.innerHTML = CD2_sel.nodeValue;
-    // elem = elem.querySelector("*");
+
     var subSlot = [
-        {
-            name: "p1_name",
-            selector: "thead tr th"
-        },
-        {
-            name: "p2_name",
-            selector: "tbody tr td"
-        }
+        {name: "p1_name", selector: "thead tr th"},
+        {name: "p2_name", selector: "tbody tr td"}
     ];
 
     select_elem = mainElem.querySelector("li");
-    CD2.tables["body"].recordElement.importTemplate(select_elem, "li");
-    CD2.tables["body"].columnElement.importTemplate(CD2_sel.firstChild, null, null, subSlot);
+    CD2.tables["body"].record.importSlot(select_elem, "li");
+    CD2.tables["body"].column.importSlot(CD2_sel.firstChild, subSlot);
     
     CD2.update(ds, "body");
 
     // #############################    
 
 
-    CD2.insertTable("thead", "span");
+    // CD2.setTableSlot("thead", "span");
 
-    select_elem = L.web.querySelecotrOuter(mainElem, "ul");
-    CD2.tables["thead"].columnElement.importTemplate(select_elem, "ul" ,
-        function(pValue, pIndex, pRow, pSlotElem) {
-            if ( pValue instanceof Object) pValue = "오브젝트여~~";
-            var columnValue = document.createTextNode(pValue + " D:" + pIndex);
-            // pSlotElem.setAttribute("class", "democlass");
-            return columnValue;
-        }
-    );
-    CD2.update(ds, "body", "thead");    // 테이블 매핑
+    // select_elem = L.web.querySelecotrOuter(mainElem, "ul");
+    // CD2.tables["thead"].column.import(select_elem, "ul" ,
+    //     function(pValue, pIndex, pRow, pSlotElem) {
+    //         if ( pValue instanceof Object) pValue = "오브젝트여~~";
+    //         var columnValue = document.createTextNode(pValue + " D:" + pIndex);
+    //         // pSlotElem.setAttribute("class", "democlass");
+    //         return columnValue;
+    //     }
+    // );
+    // CD2.update(ds, "body", "thead");    // 테이블 매핑
     
-    // #############################    
+    // // #############################    
 }
 
 /**

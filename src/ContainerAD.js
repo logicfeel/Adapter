@@ -107,10 +107,10 @@
             var mainElement         = null; 
             var mainSlot            = null;
             var mainSlotSelector    = this.tables[pTableName].mainSlotSelector;
-            var hasRecord           = this.tables[pTableName].recordElement._element ? true : false;
+            var hasRecord           = this.tables[pTableName].record._element ? true : false;
             var hasElement          = this.element ? true : false;
-            var hasRecordSubSlot    = this.tables[pTableName].recordElement.subSlot ? true : false;
-            var hasColumnSubSlot    = this.tables[pTableName].columnElement.subSlot ? true : false;
+            var hasRecordSubSlot    = this.tables[pTableName].record.subSlot ? true : false;
+            var hasColumnSubSlot    = this.tables[pTableName].column.subSlot ? true : false;
 
             if (hasElement) {
                 mainElement         = this.element;
@@ -139,10 +139,10 @@
             var mainSlotSelector    = null;
             var recordSlotSelector  = null;
 
-            if (!this.tables[pTableName].recordElement._element) return true;
+            if (!this.tables[pTableName].record._element) return true;
 
             mainSlotSelector    = this.tables[pTableName].mainSlotSelector;            
-            recordSlotSelector  = this.tables[pTableName].recordElement.slotSelector;
+            recordSlotSelector  = this.tables[pTableName].record.slotSelector;
 
             container  = L.web.querySelecotrOuter(this.template._original, mainSlotSelector);
             row        = L.web.querySelecotrOuter(this.template._original, recordSlotSelector);
@@ -185,10 +185,6 @@
             }
 
             if (!info.hasRecord) {
-
-if (typeof pDataRow === "undefined") {
-console.log('디버깅 포인트');
-}
                 elementIdx = pIdx ? (pIdx * pDataRow.length) : 0;
             }
             
@@ -296,8 +292,8 @@ console.log('디버깅 포인트');
                 recordSlotSelector  = this.tables[pTableName].mainSlotSelector
                 recordSlot          = L.web.querySelecotrOuter(record, recordSlotSelector);
             } else {
-                record              = this.tables[pTableName].recordElement._element.cloneNode(true);
-                recordSlotSelector  = this.tables[pTableName].recordElement.slotSelector;
+                record              = this.tables[pTableName].record._element.cloneNode(true);
+                recordSlotSelector  = this.tables[pTableName].record.slotSelector;
                 recordSlot          = L.web.querySelecotrOuter(record, recordSlotSelector);
             }
 
@@ -319,7 +315,7 @@ console.log('디버깅 포인트');
         // 레코드가 유무와 상관없이 호출함
         ContainerAdapter.prototype._columnManager = function(pSlot, pTableName, pDataRow) {
             
-            var hasColumnSubSlot    = this.tables[pTableName].columnElement.subSlot;
+            var hasColumnSubSlot    = this.tables[pTableName].column.subSlot;
             var column              = null;
             var equelRowCantiner    = this._equelRowCantiner(pTableName);
 
@@ -339,9 +335,9 @@ console.log('디버깅 포인트');
 
         ContainerAdapter.prototype._createColumn = function(pTableName, pRowValue, pDataRow) {
             
-            var column              = this.tables[pTableName].columnElement._element;
-            var columnSlotSelector  = this.tables[pTableName].columnElement.slotSelector;;
-            var columnCallback      = this.tables[pTableName].columnElement._callback;
+            var column              = this.tables[pTableName].column._element;
+            var columnSlotSelector  = this.tables[pTableName].column.slotSelector;;
+            var columnCallback      = this.tables[pTableName].column._callback;
             var columnIdx           = pDataRow.indexOf(pRowValue);
             var columnClone         = column.cloneNode(true);
             var columnChild         = null;
@@ -357,8 +353,8 @@ console.log('디버깅 포인트');
 
         ContainerAdapter.prototype._createColumnSubSlot = function(pTableName, pDataRow) {
             
-            var column              = this.tables[pTableName].columnElement._element;
-            var columnSubSlot       = this.tables[pTableName].columnElement.subSlot;
+            var column              = this.tables[pTableName].column._element;
+            var columnSubSlot       = this.tables[pTableName].column.subSlot;
             var columnClone         = column.cloneNode(true);
             var columnChild         = null;
             var columnCloneSlot     = null;
@@ -402,7 +398,8 @@ console.log('디버깅 포인트');
             this.tables         = new LArray();
         };
 
-        ContainerAdapter.prototype.insertTable = function(pTableName, pSelector) {
+        // insertTable => 이름 교체 됨
+        ContainerAdapter.prototype.setTableSlot = function(pTableName, pSelector) {
             
             var _refElem = null;
             var tableObject = {};
@@ -416,22 +413,23 @@ console.log('디버깅 포인트');
 
             tableObject.mainSlot = _refElem;
             tableObject.mainSlotSelector = pSelector;
-            tableObject.recordElement = new TemplateSlotElement(this);
-            tableObject.columnElement = new TemplateSlotElement(this);
+            tableObject.record = new TemplateSlotElement(this);
+            tableObject.column = new TemplateSlotElement(this);
             tableObject.beforeRecord = this._beforeRecord(tableObject);
             tableObject.recordCount = 0;
             
 
             this.tables.pushAttr(tableObject, pTableName);
-        };
+        };        
+
         
         ContainerAdapter.prototype.deleteTable = function(pTableName) {
             this.tables.popAttr(pTableName);
         };
 
         // 컨테이너 객체 초기화
-        ContainerAdapter.prototype.importTemplate = function(pObject) {
-            this.template.importTemplate(pObject, null);
+        ContainerAdapter.prototype.import = function(pObject) {
+            this.template.importSlot(pObject);
         };
 
         ContainerAdapter.prototype.insertCommand = function(pTableName, pDataRow, pIdx) {
@@ -479,7 +477,7 @@ console.log('디버깅 포인트');
     // pObjct : Element, selector => X 없음
     // 종속성 : DOM Element
     // TODO: Selector 필수 값 처리
-    // function Table(pSelector, pRecordElement, pColumnElement) {
+    // function Table(pSelector, precord, pcolumn) {
         
     //     // this.containerElement   = pContainerElement || new TemplateElement();
     //     var _refElem = null;
@@ -487,8 +485,8 @@ console.log('디버깅 포인트');
     //     _refElem = L.web.querySelecotrOuter(this.element, pSelector);
         
     //     this.mainSlot           = _refElem;
-    //     this.recordElement      = pRecordElement ||  new TemplateElement();
-    //     this.columnElement      = pColumnElement ||  new TemplateElement();
+    //     this.record      = precord ||  new TemplateElement();
+    //     this.column      = pcolumn ||  new TemplateElement();
 
     //     // TODO:  refElem 없을시 오류 처리
     // }
@@ -562,7 +560,7 @@ console.log('디버깅 포인트');
         TemplateElement.prototype.clear = function() {
             
             this._original          = null;
-            this.element            = null;
+            this._element           = null;
         };
 
         // 컬럼의 경우 셀렉터를 배열 형태로 넘겨서 매칭함
@@ -583,7 +581,7 @@ console.log('디버깅 포인트');
         ];
 
 
-        TemplateElement.prototype.import = function(pObject) {
+        TemplateElement.prototype.importSlot = function(pObject) {
             
             var elem        = null;
 
@@ -621,7 +619,7 @@ console.log('디버깅 포인트');
             }
             
             // 리턴 및 this 설정
-            this._element    = elem;
+            this._element   = elem;
             this._original  = elem.cloneNode(true); // 복제본 삽입
 
 
@@ -743,7 +741,7 @@ console.log('디버깅 포인트');
     // pObjct : Element, selector => X 없음
     // 종속성 : DOM Element
     // TODO: Selector 필수 값 처리
-    // function Table(pSelector, pRecordElement, pColumnElement) {
+    // function Table(pSelector, precord, pcolumn) {
         
     //     // this.containerElement   = pContainerElement || new TemplateElement();
     //     var _refElem = null;
@@ -751,8 +749,8 @@ console.log('디버깅 포인트');
     //     _refElem = L.web.querySelecotrOuter(this.element, pSelector);
         
     //     this.mainSlot           = _refElem;
-    //     this.recordElement      = pRecordElement ||  new TemplateElement();
-    //     this.columnElement      = pColumnElement ||  new TemplateElement();
+    //     this.record      = precord ||  new TemplateElement();
+    //     this.column      = pcolumn ||  new TemplateElement();
 
     //     // TODO:  refElem 없을시 오류 처리
     // }
@@ -764,7 +762,7 @@ console.log('디버깅 포인트');
     // pObjct : Element, selector => X 없음
     // 종속성 : DOM Element
     function TemplateSlotElement(pOnwerContainerAdapter) {
-        TemplateElement.call(this);  // ### prototype 상속 ###
+        TemplateElement.call(this, pOnwerContainerAdapter);  // ### prototype 상속 ###
 
         this._callback          = null;
         this.slot               = null;
@@ -797,7 +795,7 @@ console.log('디버깅 포인트');
         // 초기화
         // 오버라이딩
         TemplateSlotElement.prototype.clear = function() {
-            this.parent.clear();    // 오버라이딩 메소드 호출
+            this.parent.clear.call(this);    // 오버라이딩 메소드 호출
             
             this._callback          = null;
             this.slot               = null;
@@ -805,16 +803,106 @@ console.log('디버깅 포인트');
             this.subSlot            = null;
         };
 
+        // (시작위치, 슬롯위치)
+        TemplateSlotElement.prototype.setSlot = function(pSelector, pSlotSelector) {
+            
+            var elem            = null;
+            var CA_original     = this._onwer.template._original;  // 컨테이너 원본
+            var clone           = CA_original.cloneNode(true);
+            var _refElem        = null;
 
-        TemplateSlotElement.prototype.import = function(pObject, pSelector, pCallback, pSubSlot) {
+            if (!pSelector) {
+                throw new Error('오류 필수값: pSelector= ' + pSelector);
+            }
+
+            // 슬롯 초기화
+            this.clear();
+            pSlotSelector = pSlotSelector || pSelector;
+
+            this._original  = L.web.querySelecotrOuter(clone, pSelector);
+            this._element   = this._original.cloneNode(true); // 복제본 삽입
+
+
+            // 서브슬롯 (배열형태)
+            // REVIEW: 서브슬롯은 커팅을 안하는데 확인 필요
+            if (pSlotSelector instanceof Array) {
+
+                if (pSlotSelector[0].selector) {
+                    this.subSlot = pSlotSelector;
+                } else {
+                    throw new Error('subSlot 형식 오류 :');                
+                }
+
+            } else if(typeof pSlotSelector === "string") {
+
+                this._element   = L.web.cutElement(this._element, pSlotSelector, true);
+                _refElem = L.web.querySelecotrOuter(this._element, pSlotSelector);
+
+                this.slot = _refElem;
+                this.slotSelector = pSlotSelector;            
+
+            } else {
+                this.defaultSetSlot();
+            }
+
+        }
+
+        // (pObject요소 [, 슬롯선택자 | {서브슬롯선택자}, 콜백] )
+        TemplateSlotElement.prototype.importSlot = function(pObject, pSlotSelector, pCallback) {
+            
+            var elem        = null;
+            var _refElem    = null;
+
+            // 슬롯 초기화
+            this.clear();
+
+            // 오버라이딩 부모 메소드 호출
+            elem = this.parent.importSlot.call(this, pObject);
+
+            if (!(elem instanceof HTMLElement)) {
+                throw new Error('오류 HTMLElement 타입아님 ' + elem);
+            }
+
+            // 서브슬롯 (배열형태)
+            // REVIEW: 서브슬롯은 커팅을 안하는데 확인 필요
+            if (pSlotSelector instanceof Array) {
+
+                if (pSlotSelector[0].selector) {
+                    this.subSlot = pSlotSelector;
+                } else {
+                    throw new Error('subSlot 형식 오류 :');                
+                }
+
+            } else if(typeof pSlotSelector === "string") {
+
+                this._element = L.web.cutElement(this._element, pSlotSelector, true);
+                _refElem = L.web.querySelecotrOuter(this._element, pSlotSelector);
+
+                this.slot = _refElem;
+                this.slotSelector = pSlotSelector;            
+
+            } else {
+                this.defaultSetSlot();
+            }
+
+            // TODO: callback 온 경우 컬럼인 경우인지 확인 검사        
+            if (typeof pCallback === "function") {
+                this._callback = pCallback;
+            }
+
+            return elem;
+        }
+
+        // TODAY: 테스트후 삭제
+        TemplateSlotElement.prototype.__importSlot = function(pObject, pSelector, pCallback, pSubSlot) {
             
             var elem        = null;
 
             // 슬롯 초기화
             this.clear();
 
-            // 오버라이딩 메소드 호출
-            elem = this.parent.import(pObject);
+            // 오버라이딩 부모 메소드 호출
+            elem = this.parent.importSlot.call(this, pObject);
 
 
             // 셀렉터 있는 경우 main 이외

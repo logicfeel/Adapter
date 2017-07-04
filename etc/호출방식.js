@@ -28,13 +28,11 @@
 
     var CD = new ContainerAdapter("div");  // 붙임 위치 바로 지정
     var template = document.querySelector("#temp_1").firstChild;
-    CD.template.import(template);
+    CD.import(template);
 
     // (테이블명, 셀렉터)
     // 아래 중 선택
-    CD.addTableSlot("body", "tbody");
-    CD.setSlot("body", "tbody");        
-    CD.setSlotTable("body", "tbody");   // <== 유력
+    CD.setTableSlot("body", "tbody");   // <== 유력
 
     // REVIEW: 테이블 아래에서 검색[!유력] vs  전체에서 검색  선택?
     // (선택자 [, 슬롯선택자])
@@ -49,10 +47,9 @@
      */
     var CD = new ContainerAdapter("div");  // 붙임 위치 바로 지정
     var template = document.querySelector("#temp_1").firstChild;
-    CD.template.import(template);
+    CD.import(template);
 
     // (테이블명, 셀렉터)
-    CD.setSlot("body", "tbody");
     CD.setTableSlot("body", "tbody");   // <== 유력
 
     // 주입위치
