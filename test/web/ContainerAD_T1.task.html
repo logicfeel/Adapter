@@ -28,6 +28,21 @@
         </tbody>
     </table>-->
 </p>
+<p id="temp_2"><!--
+    <ul class="list-group">
+        <li class="list-group-item">..</li>
+    </ul>--></p>    
+
+    <p id="temp_3"><!--
+    <div class="a3">
+    <ul class="list-group">
+        <li class="list-group-item">
+            <b></b>
+        </li>
+    </ul>
+    </div>
+    -->
+</p> 
 
 <script src="../../external/LCommon.web.js"></script>
 <script src="../../external/DataSet.js"></script>
@@ -113,6 +128,54 @@
     CD.tables["body"].columnElement.importTemplate(select_elem, "td");
 
     CD.update(ds, "body");
+
+    /**
+     * [로그 조회]
+     * - CD.template
+     * - CD.tables[0]
+     * - CD.tables[0].recordElement
+     * - CD.tables[0].columnElement
+     * 
+     */
+
+    // 수동으로 템플릿 접근 
+    var CD2 = new ContainerAdapter();
+
+    var CD2_sel = document.querySelector("#temp_2");
+    CD2.putElement = document.querySelector("div");
+
+
+    CD2.importTemplate(CD2_sel.firstChild);     // 위치 변경
+
+    
+    
+    CD2.insertTable("body", "ul");
+    var CD2_sel = document.querySelector("#temp_1");
+    // var elem =  document.createElement('span');
+    // elem.innerHTML = CD2_sel.nodeValue;
+    // elem = elem.querySelector("*");
+    var subSlot = [
+        {
+            name: "p1_name",
+            selector: "thead tr th"
+        },
+        {
+            name: "p2_name",
+            selector: "tbody tr td"
+        }
+    ];
+
+    mainElem = CD2.template._original;
+    select_elem = mainElem.querySelector("li");
+    CD2.tables["body"].recordElement.importTemplate(select_elem, "li");
+    
+    CD2.tables["body"].columnElement.importTemplate(CD2_sel.firstChild, null, null, subSlot);
+        
+
+    CD2.update(ds, "body");
+
+
+
 }
 
 console.log('-End-');
