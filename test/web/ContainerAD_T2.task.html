@@ -23,7 +23,7 @@
         </thead>
         <tbody>
             <tr>
-                <td><b></b></td>
+                <td><b><input type="button" name="aa" value="버튼임"></input></b></td>
             </tr>        
         </tbody>
     </table>-->
@@ -44,9 +44,30 @@
             <b></b>
         </li>
     </ul>
-    </div>
-    -->
+    </div>-->
 </p> 
+<p id="commit"><!--<input type="button" name="aa" value="버튼임"></input>--></p>
+
+<div id="back">
+    <div id="b1" class="form-group">
+      <label class="col-sm-2 control-label"><span class="glyphicon glyphicon-paperclip"></span> 제목</label>
+      <div class="col-sm-8">
+        <input class="form-control" name="title" id="title" type="text" value="" placeholder="제목을 입력해 주세요." maxlength="50" />
+      </div>
+    </div>
+    <div id="b2" class="form-group">
+      <label class="col-sm-2 control-label"><span class="glyphicon glyphicon-paperclip"></span> 작성자</label>
+      <div class="col-sm-4">
+        <input class="form-control" name="writer" id="writer" type="text" value=""  maxlength="10"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">내용</label>
+      <div class="col-sm-8">
+         <textarea class="form-control" rows="10" name="content" id="content"></textarea>
+      </div>
+    </div>
+</div>
 
 <script src="../../external/LCommon.web.js"></script>
 <script src="../../external/DataSet.js"></script>
@@ -73,21 +94,31 @@
     dr["p2_name"] = '2번내용';
     dt1.rows.add(dr);
 
-    dr = dt1.newRow();
-    dr["p1_name"] = '10번내용';
-    dr["p2_name"] = '20번내용';
-    dt1.rows.add(dr);
+    // dr = dt1.newRow();
+    // dr["p1_name"] = '10번내용';
+    // dr["p2_name"] = '20번내용';
+    // dt1.rows.add(dr);
+    // // ds.acceptChanges();   // 커밋 시점 이후 부터 반영
 
-    dr = dt1.newRow();
-    dr["p1_name"] = '100번내용';
-    dr["p2_name"] = '200번내용';
-    dt1.rows.add(dr);
+    // dr = dt1.newRow();
+    // dr["p1_name"] = '100번내용';
+    // dr["p2_name"] = '200번내용';
+    // dt1.rows.add(dr);
+
+    // dr = dt1.newRow();
+    // dr["p1_name"] = '10번내용 - 중간수정';
+    // dr["p2_name"] = '20번내용 - 중간수정';
+    // dt1.rows.insertAt(dr, 1);
+
+    
+    // dt1.rows.removeAt(2);
+    
+    // ds.acceptChanges();
 
     var ch1 = ds.getChanges();           // 변경내용 조회
 }
 
 {
-    
     var CD = new ContainerAdapter("div");
     var template = document.querySelector("#temp_1").firstChild;
     CD.import(template);
@@ -113,7 +144,8 @@
     var subSlot2 = [
         {
             name: "p1_name",
-            selector: "b"
+            selector: "b input[value]"
+            //attr: "value"       // 속성명 value="" 값으로 설정함
         },
         {
             name: "p2_name",
@@ -123,39 +155,46 @@
 
     // 2. 컨테이너 템플릿 참조 방식
     CD.tables["body"].record.setSlot("tr");
-    CD.tables["body"].column.setSlot("td", "td b");
-    // CD.tables["body"].column.setSlot("td", subSlot2);
+    // CD.tables["body"].column.setSlot("td", "td b");
+    // 형식 테스트
+    // CD.tables["body"].column.setSlot("td", {
+    //     selector:"td b", cut: true
+    // });
+    // CD.tables["body"].column.setSlot("td", null);
+    CD.tables["body"].column.setSlot("td", subSlot2);
 
-    CD.update(ds, "body");
+    // CD.update(ds, "body");
     
+    // dt1.rows.removeAt(2);
+
     // #############################    
     
-    // 수동으로 템플릿 접근 
-    var CD2 = new ContainerAdapter();
+    // // 수동으로 템플릿 접근 
+    // var CD2 = new ContainerAdapter();
 
-    var CD2_sel = document.querySelector("#temp_2");
-    CD2.putElement = document.querySelector("div");
+    // var CD2_sel = document.querySelector("#temp_2");
+    // CD2.putElement = document.querySelector("div");
 
-    CD2.import(CD2_sel.firstChild);     // 위치 변경
+    // CD2.import(CD2_sel.firstChild);     // 위치 변경
     
-    CD2.setTableSlot("body", "ul");
+    // CD2.setTableSlot("body", "ul");
 
-    mainElem = CD2.template._original;
+    // mainElem = CD2.template._original;
 
-    var CD2_sel = document.querySelector("#temp_1");
+    // var CD2_sel = document.querySelector("#temp_1");
 
-    var subSlot = [
-        {name: "p1_name", selector: "thead tr th"},
-        {name: "p2_name", selector: "tbody tr td"}
-    ];
+    // var subSlot = [
+    //     {name: "p1_name", selector: "thead tr th"},
+    //     {name: "p2_name", selector: "tbody tr td"}
+    // ];
 
-    select_elem = mainElem.querySelector("li");
-    CD2.tables["body"].record.importSlot(select_elem, "li");
-    CD2.tables["body"].column.importSlot(CD2_sel.firstChild, subSlot);
+    // select_elem = mainElem.querySelector("li");
+    // CD2.tables["body"].record.importSlot(select_elem, "li");
+    // CD2.tables["body"].column.importSlot(CD2_sel.firstChild, subSlot);
     
-    CD2.update(ds, "body");
+    // CD2.update(ds, "body");
 
-    // #############################    
+    // // #############################    
 
 
     // CD2.setTableSlot("thead", "span");
@@ -174,12 +213,67 @@
     // // #############################    
 }
 
+{
+    // var CD = new ContainerAdapter();
+    var CD = new ContainerAdapter("#back");
+    var template = document.querySelector("#back");
+    CD.import(template);
+
+    // // 메인지정안한경우
+    // // CD.template.insertSlot("table", "main_t");   
+
+    CD.setTableSlot("body", "#b1");    //테이블명, 선택자
+
+    var subSlot2 = [
+        {
+            name: "p1_name",
+            selector: "label"
+            //attr: "value"       // 속성명 value="" 값으로 설정함
+        },
+        {
+            name: "p2_name",
+            selector: "input[value]"
+        }
+    ];
+
+    // 2. 컨테이너 템플릿 참조 방식
+    // CD.tables["body"].record.setSlot("tr");
+    // CD.tables["body"].column.setSlot("td", "td b");
+    // 형식 테스트
+    // CD.tables["body"].column.setSlot("td", {
+    //     selector:"td b", cut: true
+    // });
+    // CD.tables["body"].column.setSlot("td", null);
+    CD.tables["body"].column.setSlot("#b1", subSlot2);
+
+    CD.update(ds, "body");
+}
+{
+    // var t1 = document.querySelector("#commit");
+    // var t_elem = new TemplateElement();
+    // t_elem.importTemplate(t1.firstChild);
+    // t_elem.insertSlot("input", "in");
+    // // 슬롯 삭제 테스트
+    // t_elem.slot["in"].setAttribute("value", "슬롯 반영");
+    // var t_div = document.querySelector("div");
+    
+
+    // t_div.appendChild(t_elem.element);
+
+    // // t_elem.deleteSlot("in");
+    
+    
+}
+
 /**
  * [로그 조회]
  * - CD.template
  * - CD.tables[0]
  * - CD.tables[0].recordElement
  * - CD.tables[0].columnElement
+ * document.querySelector("tbody")
+ * CD.element.querySelector("tbody")
+ * CD.element.querySelector("tbody ")
  * 
  */
 console.log('-End-');

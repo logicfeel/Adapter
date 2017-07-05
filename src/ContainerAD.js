@@ -44,20 +44,22 @@
     //      장점 : 단순한 구조 임
     //      단점 : 복잡한 구조 사용에 코드가 지져분해짐
     // - 서버 가져오기
-    function ContainerAdapter(pPutSelector) {
-        DataAdapter.call(this);     // ### 상속(prototype) ###
+    // function ContainerAdapter(pPutSelector, pTemplate, pIsSingleRow) {
+    function ContainerAdapter(pPutSelector, pIsSingleRow) {        
+        DataAdapter.call(this, pIsSingleRow);     // ### 상속(prototype) ###
         
         this.isDebug        = false;
         this.putElement     = null;                     // 붙일 위치
         this.element        = null;                     // TemplateElement : 컨테이너 
         this.template       = new TemplateElement(this);
         this.tables         = new LArray();
+
         
         if (typeof pPutSelector === "string") {
             this.putElement = document.querySelector(pPutSelector);
         }
 
-        this.eventList.push("inserted", "deleted", "updated", "selected")
+        this.eventList.push("inserted", "deleted", "updated", "selected");
     }
     (function() {   
         // ### 상속(prototype) ###
@@ -155,19 +157,81 @@
         }
 
         // 콜백 호출
-        ContainerAdapter.prototype._callbackManager = function(pCallback, pRowValue, pColumnIdx, pDataRow, pColumClone) {
+        ContainerAdapter.prototype._callbackManager = function(pSlotSelector, pCallback, pRowValue, pColumnIdx, pDataRow, pColumClone) {
             
             var columnChild         = null;
-            
+            var attrName            = "";
+            var stIdx               = 0;
+            var endIdx              = 0; 
+
             if (pCallback && typeof pCallback === "function") {
                 columnChild = pCallback.call(this, pRowValue, pColumnIdx, pDataRow, pColumClone);
             } else {
-                columnChild = document.createTextNode(pRowValue);
+                stIdx = pSlotSelector.indexOf("[");
+                endIdx = pSlotSelector.indexOf("]");
+
+                // 속성값 설정의 경우
+                if (stIdx > -1 && endIdx > -1) {
+                    attrName = pSlotSelector.substring(stIdx + 1, endIdx);
+                    pColumClone.setAttribute(attrName, pRowValue);
+
+                // 요소값 설정의 경우
+                } else {
+                    pColumClone.textContent = ""; // 기존 텍스트 초기화   폴리필 삽입함 1.0.1 이후용
+                    columnChild = document.createTextNode(pRowValue);
+                }
+                
+                
+                
             }
             return columnChild;
         };
 
         ContainerAdapter.prototype._attachManager = function(pTableName, pRecord, pIdx, pRecordCount, pDataRow) {
+
+            var info                = this._getTableInfo(pTableName);
+            var beforeRecordCount   = 0;
+            var elementIdx          = 0;
+            var index               = 0;
+
+            pRecordCount = pRecordCount || 0;
+
+// 디버깅
+// if (pIdx === 1) {
+//     console.log('Stop');
+// }
+
+            // 병합 관점 레코드 카운터 가져오기 (레코드 위치 관리)
+            beforeRecordCount = this._countRecord(this.tables[pTableName].beforeRecord);
+
+            // pIdx 가 없거나 정수 타입이 아니면 기본값 0 설정
+            if (!pIdx || typeof pIdx !== "number") {
+                pIdx = 0;
+            }
+
+            if (!info.hasRecord) {
+                elementIdx = pIdx ? (pIdx * pDataRow.length) : 0;
+            } else {
+                elementIdx = pIdx;
+            }
+            
+            // (pIdx)인덱스 값 + (beforeRecordCount)이전레코드 수 + 컬럼=>레코드 변환 누적카운터
+            // index = elementIdx + beforeRecordCount + pRecordCount + pIdx;
+            index = elementIdx + beforeRecordCount + pRecordCount;
+
+            // REVIEW : 방식에 따라서 fill 위치와 연관 있음 => 당연한 결과
+            info.mainSlot.insertBefore(pRecord, info.mainSlot.childNodes[index]);
+            
+            // 레코드 카운터 추가 (!삭제 변경시 관리 해야 함)
+            this.tables[pTableName].recordCount++;  
+
+            if (!info.hasElement) {
+                this.element = info.mainElement;
+                if (this.putElement) this.putElement.appendChild(this.element);
+            }
+        };
+
+        ContainerAdapter.prototype._removeManager = function(pTableName, pIdx, pRecordCount, pDataRow) {
 
             var info                = this._getTableInfo(pTableName);
             var beforeRecordCount   = 0;
@@ -186,22 +250,26 @@
 
             if (!info.hasRecord) {
                 elementIdx = pIdx ? (pIdx * pDataRow.length) : 0;
+            } else {
+                elementIdx = pIdx;
             }
             
             // (pIdx)인덱스 값 + (beforeRecordCount)이전레코드 수 + 컬럼=>레코드 변환 누적카운터
-            index = elementIdx + beforeRecordCount + pRecordCount + pIdx;
+            // index = elementIdx + beforeRecordCount + pRecordCount + pIdx;
+            index = elementIdx + beforeRecordCount;
 
             // REVIEW : 방식에 따라서 fill 위치와 연관 있음 => 당연한 결과
-            info.mainSlot.insertBefore(pRecord, info.mainSlot.childNodes[index]);
+            info.mainSlot.removeChild(info.mainSlot.childNodes[index]);
             
             // 레코드 카운터 추가 (!삭제 변경시 관리 해야 함)
-            this.tables[pTableName].recordCount++;  
+            this.tables[pTableName].recordCount--;
 
             if (!info.hasElement) {
                 this.element = info.mainElement;
-                this.putElement.appendChild(this.element);
+                if (this.putElement) this.putElement.appendChild(this.element);
             }
         };
+
 
         ContainerAdapter.prototype._createContainer = function(pTableName, pDataRow, pIdx) {
 
@@ -212,23 +280,23 @@
             // [O, -, -, -] : 레코드 = 메인컨테이너 같음 유무  (공통: 로우블럭X)
             if (equelRowCantiner) {
                 
-                // [O, O, -, -] : 레코드 유무
+                // [O, O, -, -] : 레코드 유무-O
                 if (info.hasRecord) {
                     
                     // 로우 블럭 제거 로직
                     record = this._recordManager(pTableName, pDataRow);
                     this._attachManager(pTableName, record, pIdx);
 
-                // [O, X, -, -] :    
+                // [O, X, -, -] :  레코드 유무-X   
                 } else {
 
-                    // [O, X, X, O]  레코드 서브 무조건 없음
+                    // [O, X, X, O]  레코드 서브 무조건 없음 - 컬럼서브슬롯-O
                     if (info.hasColumnSubSlot) {
                         record = this._createColumnSubSlot(pTableName, pDataRow);
-                        // this._attachManager(pTableName, record, pIdx, i);  17-07-04 아래코드로 디버깅 수정함 
+                        // this._attachManager(pTableName, record, pIdx, i);  //17-07-04 아래코드로 디버깅 수정함 
                         this._attachManager(pTableName, record, pIdx, i, pDataRow);
                     
-                    // [O, X, X, X]  레코드 서브 무조건 없음    
+                    // [O, X, X, X]  레코드 서브 무조건 없음 - 컬럼서브슬롯-X   
                     } else {
                         for (var i = 0; i < pDataRow.length; i++) {
                             record = this._createColumn(pTableName, pDataRow[i], pDataRow);
@@ -237,16 +305,54 @@
                     }
                 }
 
-            // [X, -, -, -]
+            // [X, -, -, -] : 레코드 != 메인컨테이너
             } else {
 
-                // [X, O, -, -] : 레코드 유무  (레코드 무조건 있음)
+                // [X, O, -, -] : 레코드 유무-O  (레코드 무조건 있음)
                 if (info.hasRecord) {
                     record = this._recordManager(pTableName, pDataRow);
                     this._attachManager(pTableName, record, pIdx);
                 }            
             }
         }
+
+        ContainerAdapter.prototype._removeContainer = function(pTableName, pDataRow, pIdx) {
+
+            var info                = this._getTableInfo(pTableName);
+            var equelRowCantiner    = this._equelRowCantiner(pTableName);
+
+            // [O, -, -, -] : 레코드 = 메인컨테이너 같음 유무  (공통: 로우블럭X)
+            if (equelRowCantiner) {
+                
+                // [O, O, -, -] : 레코드 유무-O
+                if (info.hasRecord) {
+                    
+                    // 로우 블럭 제거 로직
+                    this._removeManager(pTableName, pIdx);
+
+                // [O, X, -, -] :  레코드 유무-X   
+                } else {
+
+                    // [O, X, X, O]  레코드 서브 무조건 없음 - 컬럼서브슬롯-O
+                    if (info.hasColumnSubSlot) {
+                        this._removeManager(pTableName, pIdx, i, pDataRow);
+                    // [O, X, X, X]  레코드 서브 무조건 없음 - 컬럼서브슬롯-X   
+                    } else {
+                        for (var i = 0; i < pDataRow.length; i++) {
+                            this._removeManager(pTableName, pIdx, i, pDataRow);
+                        }
+                    }
+                }
+
+            // [X, -, -, -] : 레코드 != 메인컨테이너
+            } else {
+
+                // [X, O, -, -] : 레코드 유무-O  (레코드 무조건 있음)
+                if (info.hasRecord) {
+                    this._removeManager(pTableName, pIdx);
+                }            
+            }
+        }        
 
         ContainerAdapter.prototype._replaceContainer = function(pTableName, pDataRow, pIdx) {
             
@@ -255,9 +361,10 @@
             this._createContainer(pTableName, pDataRow, pIdx);
         };
 
-        ContainerAdapter.prototype._removeContainer = function(pTableName, pDataRow, pIdx) {
-            // TODO: 삭제 로직
-        };
+        // ContainerAdapter.prototype._removeContainer = function(pTableName, pDataRow, pIdx) {
+        //     // TODO: 삭제 로직 (테스트 필요)
+        //     this._removeContainer(pTableName, pDataRow, pIdx);
+        // };
 
         ContainerAdapter.prototype._selectContainer = function(pTableName, pDataRow, pIdx) {
             // TODO: 조회 로직
@@ -343,10 +450,12 @@
             var columnChild         = null;
             var columnCloneSlot     = null;
 
-            columnChild     = this._callbackManager(columnCallback, pRowValue, columnIdx, pDataRow, columnClone);
             columnCloneSlot = L.web.querySelecotrOuter(columnClone, columnSlotSelector);
-
-            columnCloneSlot.appendChild(columnChild);
+            columnChild     = this._callbackManager(columnSlotSelector, columnCallback, pRowValue, columnIdx, pDataRow, columnCloneSlot);
+            
+            if (columnChild) {
+                columnCloneSlot.appendChild(columnChild);
+            }
 
             return columnClone;
         };
@@ -375,11 +484,16 @@
                 if (columnIdx >= 0) {
                     rowValue        = pDataRow[columnIdx];
                     columnCallback  = columnSubSlot[i].callback;
-                    columnChild     = this._callbackManager(columnCallback, rowValue, columnIdx, pDataRow, columnClone);
+                    columnChild     = this._callbackManager(columnSubSlot[i].selector, columnCallback, rowValue, columnIdx, pDataRow, columnCloneSlot);
                 } else {
                     console.log('서브 슬록 없음' + i);
                 }
-                columnCloneSlot.appendChild(columnChild);
+                
+                // 요소가 있는 경우 (속성값의 경우 요소가 아님)
+                if (columnChild) {
+                    columnCloneSlot.appendChild(columnChild);
+                }
+                
             }
             return columnClone;
         };
@@ -413,11 +527,13 @@
 
             tableObject.mainSlot = _refElem;
             tableObject.mainSlotSelector = pSelector;
-            tableObject.record = new TemplateSlotElement(this);
-            tableObject.column = new TemplateSlotElement(this);
+            tableObject.record = new TemplateSlotElement(this, "record");
+            tableObject.column = new TemplateSlotElement(this, "column");
             tableObject.beforeRecord = this._beforeRecord(tableObject);
             tableObject.recordCount = 0;
             
+            // TODAY: 작업중
+            tableObject.rows = [];
 
             this.tables.pushAttr(tableObject, pTableName);
         };        
@@ -429,6 +545,9 @@
 
         // 컨테이너 객체 초기화
         ContainerAdapter.prototype.import = function(pObject) {
+            // if (this.putElement === null) {
+            //     this.element = pObject;
+            // }
             this.template.importSlot(pObject);
         };
 
@@ -441,7 +560,7 @@
             return true;
         };
 
-        ContainerAdapter.prototype.deleteCommand = function(pTableName, pIdx) {
+        ContainerAdapter.prototype.deleteCommand = function(pTableName, pDataRow, pIdx) {
             this._removeContainer(pTableName, pDataRow, pIdx);
             
             this._event.publish("deleted");
@@ -761,9 +880,10 @@
     // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     // pObjct : Element, selector => X 없음
     // 종속성 : DOM Element
-    function TemplateSlotElement(pOnwerContainerAdapter) {
+    function TemplateSlotElement(pOnwerContainerAdapter, pAttrName) {
         TemplateElement.call(this, pOnwerContainerAdapter);  // ### prototype 상속 ###
-
+        
+        this.name               = pAttrName;
         this._callback          = null;
         this.slot               = null;
         this.slotSelector       = null;
@@ -804,7 +924,8 @@
         };
 
         // (시작위치, 슬롯위치)
-        TemplateSlotElement.prototype.setSlot = function(pSelector, pSlotSelector) {
+        // TemplateSlotElement.prototype.setSlot = function(pSelector, pIsCut, pCallback) {
+        TemplateSlotElement.prototype.setSlot = function(pSelector, pSlotSelector, pCallback) {
             
             var elem            = null;
             var CA_original     = this._onwer.template._original;  // 컨테이너 원본
@@ -829,13 +950,19 @@
 
                 if (pSlotSelector[0].selector) {
                     this.subSlot = pSlotSelector;
+
+                    // TODO:  레코드 서브 슬롯을 사용할경우  if (this.name === "record") { } 로직 삽입필요
+
                 } else {
                     throw new Error('subSlot 형식 오류 :');                
                 }
 
             } else if(typeof pSlotSelector === "string") {
-
-                this._element   = L.web.cutElement(this._element, pSlotSelector, true);
+                
+                // 레코드는 자동 커팅
+                if (this.name === "record") {
+                    this._element   = L.web.cutElement(this._element, pSlotSelector, true);
+                }
                 _refElem = L.web.querySelecotrOuter(this._element, pSlotSelector);
 
                 this.slot = _refElem;
@@ -845,6 +972,10 @@
                 this.defaultSetSlot();
             }
 
+            // TODO: callback 온 경우 컬럼인 경우인지 확인 검사        
+            if (typeof pCallback === "function") {
+                this._callback = pCallback;
+            }
         }
 
         // (pObject요소 [, 슬롯선택자 | {서브슬롯선택자}, 콜백] )
@@ -1014,5 +1145,6 @@
     }
     // 전역 배포
     _G.ContainerAdapter     = ContainerAdapter;
+    _G.TemplateElement      = TemplateElement;
 
 }(this));

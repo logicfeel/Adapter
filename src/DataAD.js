@@ -23,8 +23,9 @@
 
     // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     // 추상 클래스 역활
-    function DataAdapter() {
+    function DataAdapter(pIsSingleRow) {
         
+        this.isSingleRow    = pIsSingleRow ? true : false;
         this.isDebug        = false;
         this._event         = new Observer(this, this);
         this._tableMapping  = [];
@@ -104,6 +105,7 @@
 
             var cTables = null;
             var aTable  = "";
+            var rowCnt  = 0;
 
             if (pAdapterName) {
                 this._setTableMapping(pAdapterName, pTableName);
@@ -119,22 +121,29 @@
                 cTables = pDataSet.getChanges();
             }
 
-            for (var i = 0; i < cTables.length; i++) {
+            for (var i = 0; i < cTables.length && cTables[0] !== null; i++) {
                 for (var ii = 0; ii < cTables[i].changes.length; ii++) {
+
                     
+                    if (this.isSingleRow && rowCnt > 1 ) {
+                        throw new Error('SingleRow 에러 발생 changes.length:' + cTables[i].changes.length);
+                    }
+
                     aTable = this.getAdapterName(cTables[i].table);
                     
                     switch (cTables[i].changes[ii].cmd) {
                         case "I":       // update() commanad
                             this.insertCommand(aTable, cTables[i].changes[ii].row, cTables[i].changes[ii].idx);
+                            rowCnt++;
                             // this.insertCommand(cTables[i].table, cTables[i].changes[ii].row, cTables[i].changes[ii].idx);
                             break;
                         case "D":       // update() commanad
-                            this.updateCommand(aTable, cTables[i].changes[ii].row, cTables[i].changes[ii].idx);
+                            this.deleteCommand(aTable, cTables[i].changes[ii].row, cTables[i].changes[ii].idx);
                             // this.updateCommand(cTables[i].table, cTables[i].changes[ii].row, cTables[i].changes[ii].idx);
+                            rowCnt--;
                             break;
                         case "U":       // update() commanad
-                            this.deleteCommand(aTable, cTables[i].changes[ii].row, cTables[i].changes[ii].idx);
+                            this.updateCommand(aTable, cTables[i].changes[ii].row, cTables[i].changes[ii].idx);
                             //  this.deleteCommand(cTables[i].table, cTables[i].changes[ii].row, cTables[i].changes[ii].idx);
                             break;
                         // case "S":       // fill() commanad
