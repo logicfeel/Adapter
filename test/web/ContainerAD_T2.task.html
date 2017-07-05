@@ -214,15 +214,15 @@
 }
 
 {
-    // var CD = new ContainerAdapter();
-    var CD = new ContainerAdapter("#back");
+    var CD2 = new ContainerAdapter();
+    // var CD = new ContainerAdapter("#back");
     var template = document.querySelector("#back");
-    CD.import(template);
+    CD2.import(template);
 
     // // 메인지정안한경우
     // // CD.template.insertSlot("table", "main_t");   
 
-    CD.setTableSlot("body", "#b1");    //테이블명, 선택자
+    CD2.setTableSlot("body", "#b1");    //테이블명, 선택자
 
     var subSlot2 = [
         {
@@ -244,9 +244,9 @@
     //     selector:"td b", cut: true
     // });
     // CD.tables["body"].column.setSlot("td", null);
-    CD.tables["body"].column.setSlot("#b1", subSlot2);
+    CD2.tables["body"].column.setSlot("#b1", subSlot2);
 
-    CD.update(ds, "body");
+    CD2.update(ds, "body");
 }
 {
     // var t1 = document.querySelector("#commit");

@@ -50,6 +50,8 @@
         
         this.isDebug        = false;
         this.putElement     = null;                     // 붙일 위치
+        this._importTemp    = null;
+
         this.element        = null;                     // TemplateElement : 컨테이너 
         this.template       = new TemplateElement(this);
         this.tables         = new LArray();
@@ -227,7 +229,11 @@
 
             if (!info.hasElement) {
                 this.element = info.mainElement;
-                if (this.putElement) this.putElement.appendChild(this.element);
+                if (this.putElement) {
+                    this.putElement.appendChild(this.element);
+                } else {
+                    this._importTemp = this.element;
+                }
             }
         };
 
@@ -545,10 +551,14 @@
 
         // 컨테이너 객체 초기화
         ContainerAdapter.prototype.import = function(pObject) {
-            // if (this.putElement === null) {
-            //     this.element = pObject;
-            // }
+            
             this.template.importSlot(pObject);
+            if (this.putElement === null) {
+                // this._importTemp = pObject;
+                pObject.outerHTML = "<div id='abcd'>a</div>";
+                this.putElement = pObject;
+            }
+            // pObject.outerHTML = '<div></div>';
         };
 
         ContainerAdapter.prototype.insertCommand = function(pTableName, pDataRow, pIdx) {
