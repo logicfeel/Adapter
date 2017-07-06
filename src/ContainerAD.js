@@ -45,7 +45,7 @@
     //      단점 : 복잡한 구조 사용에 코드가 지져분해짐
     // - 서버 가져오기
     // function ContainerAdapter(pPutSelector, pTemplate, pIsSingleRow) {
-    function ContainerAdapter(pPutSelector, pIsSingleRow) {        
+    function ContainerAdapter(pPutSelector, pImpSelector, pIsSingleRow) {        
         DataAdapter.call(this, pIsSingleRow);     // ### 상속(prototype) ###
         
         this.isDebug        = false;
@@ -60,6 +60,11 @@
         if (typeof pPutSelector === "string") {
             this.putElement = document.querySelector(pPutSelector);
         }
+        if (typeof pImpSelector === "string") {
+            var template = document.querySelector(pImpSelector);
+            this.import(template);
+        }
+        
 
         this.eventList.push("inserted", "deleted", "updated", "selected");
     }
@@ -118,7 +123,9 @@
 
             if (hasElement) {
                 mainElement         = this.element;
-                mainSlot            = L.web.querySelecotrOuter(this.element, mainSlotSelector);
+                // 17-07-06 동일 putElement 에 CD 2개 이상 적용시 썩음 문제 
+                // mainSlot            = L.web.querySelecotrOuter(this.element, mainSlotSelector);
+                mainSlot            = this.element.querySelector(mainSlotSelector);
             } else {
                 mainElement         = this.template._element.cloneNode(true);
                 mainSlot            = L.web.querySelecotrOuter(mainElement, mainSlotSelector);
@@ -179,7 +186,16 @@
 
                 // 요소값 설정의 경우
                 } else {
-                    pColumClone.textContent = ""; // 기존 텍스트 초기화   폴리필 삽입함 1.0.1 이후용
+                    // 텍스트 노드만 검색후 삭제함
+                    // TODO: 이후 전역으로 검토
+                    // TEXT_NODE : 3
+                    for (var i = 0; i < pColumClone.childNodes.length; i++) {
+                        if (pColumClone.childNodes[i].nodeType === 3) {
+                            pColumClone.childNodes[i].nodeValue = '';
+                        }
+                    }
+                    
+                    // pColumClone.textContent = ""; // 기존 텍스트 초기화   폴리필 삽입함 1.0.1 이후용
                     columnChild = document.createTextNode(pRowValue);
                 }
                 
@@ -227,12 +243,16 @@
             // 레코드 카운터 추가 (!삭제 변경시 관리 해야 함)
             this.tables[pTableName].recordCount++;  
 
+            // 문서에 붙임
             if (!info.hasElement) {
+
                 this.element = info.mainElement;
+
                 if (this.putElement) {
                     this.putElement.appendChild(this.element);
                 } else {
-                    this._importTemp = this.element;
+                    // 원본.부모.기준으로 교체함
+                    this._importTemp.parentElement.replaceChild(this.element, this._importTemp);
                 }
             }
         };
@@ -270,9 +290,17 @@
             // 레코드 카운터 추가 (!삭제 변경시 관리 해야 함)
             this.tables[pTableName].recordCount--;
 
+            // 문서에 붙임
             if (!info.hasElement) {
+                
                 this.element = info.mainElement;
-                if (this.putElement) this.putElement.appendChild(this.element);
+                
+                if (this.putElement) {
+                    this.putElement.appendChild(this.element);
+                } else {
+                    // 원본.부모.기준으로 교체함
+                    this._importTemp.parentElement.replaceChild(this.element, this._importTemp);
+                }
             }
         };
 
@@ -554,9 +582,9 @@
             
             this.template.importSlot(pObject);
             if (this.putElement === null) {
-                // this._importTemp = pObject;
-                pObject.outerHTML = "<div id='abcd'>a</div>";
-                this.putElement = pObject;
+                this._importTemp = pObject;
+                // pObject.outerHTML = "<div id='abcd'>a</div>";
+                // this.putElement = pObject;
             }
             // pObject.outerHTML = '<div></div>';
         };
@@ -717,28 +745,33 @@
             // 슬롯 초기화
             this.clear();
 
-            // 주석        
-            if (pObject.nodeType === 8) {                       
-                
+            // 주석 <!-- -->      
+            if (pObject.nodeType === 8) {
+
                 elem = _importCommit(pObject);
 
-            // 스크립트
+            // <요소><!-- --></요소>   : 요소뒤 주석
+            } else if (pObject.firstChild.nodeType === 8) {      
+            
+                elem = _importCommit(pObject.firstChild);
+
+            // 스크립트 <script>
             } else if (pObject instanceof HTMLScriptElement) {      
 
                 elem = _importScript(pObject);
 
-            // 템플릿
+            // 템플릿 <template>
             // TODO: 태그 이름으로 해야함,  IE 호환성 이슈
             } else if (pObject.content) {
             
                 elem = _importTemplate(pObject);
 
-            // HTML 요소
+            // HTML 요소 <요소>
             } else if (pObject instanceof HTMLElement) {
 
                 elem = _importElement(pObject);
 
-            // 텍스트    
+            // 텍스트  <테스트>
             } else if (typeof pObject === "string") {
 
                 elem = _importText(pObject);
@@ -761,88 +794,6 @@
 
             return elem;
         }
-
-        // SubSlot 가 선택되면 정적모드로 되서 레코드별로 노드를 복제 생성하지 않음
-        // callback() : 컬럼모드만 사용 가능
-        // callback(pValue, pIndex, pRow, pSlotElem) : 컬럼값, 컬럼idx, row레코드, 슬롯요소
-        TemplateElement.prototype.importTemplate = function(pObject, pSelector, pCallback, pSubSlot) {
-            
-            var elem        = null;
-
-            // 슬롯 초기화
-            this.clear();
-
-            // 주석        
-            if (pObject.nodeType === 8) {                       
-                
-                elem = _importCommit(pObject);
-
-            // 스크립트
-            } else if (pObject instanceof HTMLScriptElement) {      
-
-                elem = _importScript(pObject);
-
-            // 템플릿
-            // TODO: 태그 이름으로 해야함,  IE 호환성 이슈
-            } else if (pObject.content) {
-            
-                elem = _importTemplate(pObject);
-
-            // HTML 요소
-            } else if (pObject instanceof HTMLElement) {
-
-                elem = _importElement(pObject);
-
-            // 텍스트    
-            } else if (typeof pObject === "string") {
-
-                elem = _importText(pObject);
-
-            } else {
-                throw new Error('pObject 타입 오류 : pObject=' + pOriginal);
-            }
-            
-            // 리턴 및 this 설정
-            this._element    = elem;
-            this._original  = elem.cloneNode(true); // 복제본 삽입
-            
-            // 셀렉터 있는 경우 main 이외
-            // !! 서브셀렉터느 안됨.
-            if (pSelector && !pSubSlot) {
-                
-                L.web.cutElement(this._element, pSelector, true);
-                
-                var _refElem = null;
-
-                _refElem = L.web.querySelecotrOuter(this._element, pSelector);
-
-                this.slot = _refElem;
-                this.slotSelector = pSelector;            
-            }
-
-            // TODO: callback 온 경우 컬럼인 경우인지 확인 검사        
-            if (typeof pCallback === "function") {
-                this._callback = pCallback;
-            }
-
-            if (pSubSlot) {
-                if (pSubSlot instanceof Array && pSubSlot[0].selector) {
-                    this.subSlot = pSubSlot;
-                } else {
-                    throw new Error('subSlot 형식 오류 :');                
-                }
-            }
-            
-            if (elem) {
-                this._event.publish("succeed");
-            } else {
-                this._event.publish("failed");
-            }
-            this._event.publish("closed");
-
-            return elem;
-        }
-        
 
         // 이벤트 등록
         // TODO: 확인필요
