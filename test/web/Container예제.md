@@ -49,20 +49,27 @@ CD.update(ds, "body", "body2");
 ```
 
 ## import 형식 - CAd_T01_T02.task.html
-    - 주석 템플릿
+    1. 주석 템플릿
         + 최상위 요소는 1개만 만드는 규칙 
 
-    - 스크립트 템플릿
+    2. 스크립트 템플릿
 
-    - 템플릿
+    3. 템플릿
+        + 쉐도우돔 처리는 putElement 위치에 적용하는게 맞음
 
-    - 요소
+    4. 텍스트 (String 형태의 요소)
 
-    - 텍스트 (String 형태의 요소)
+    5. 요소 (요소 원본 지정 방식)
 
-    - 요소 원본 지정 방식
+    - 쉬도우돔 (ShadowDOM)
+        + 쉬도우돔 처리시 putElement 를 독립적으로 구성해야함
 
+        + 쉬도우돔 사용시 <Style>태그로  내부에 나열해서 이용 
+          (내부에 *link src="*.css" 사용 못함)
 
+        + putElement 미 지정시 쉬도우 돔 사용 못함  (우회방법은 있으나 불필요)
+
+        + setShadow(true); 사용시  putElement 지정후 사용 가능, update 호출 전에 사용
 
 ## 슬롯 지정 방식에 비교 - CAd_T01_T03.task.html
     - 메인테이블=레코드  vs  메인테이블!=레코드

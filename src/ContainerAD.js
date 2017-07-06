@@ -47,18 +47,24 @@
     // function ContainerAdapter(pPutSelector, pTemplate, pIsSingleRow) {
     function ContainerAdapter(pPutSelector, pImpSelector, pIsSingleRow) {        
         DataAdapter.call(this, pIsSingleRow);     // ### 상속(prototype) ###
+
+        this._importTemp    = null;
+        this._isShadow      = false;                   // 쉐도움돔 처리
         
         this.isDebug        = false;
         this.putElement     = null;                     // 붙일 위치
-        this._importTemp    = null;
-
         this.element        = null;                     // TemplateElement : 컨테이너 
         this.template       = new TemplateElement(this);
         this.tables         = new LArray();
-
         
         if (typeof pPutSelector === "string") {
             this.putElement = document.querySelector(pPutSelector);
+            // if (this.isShadow) {
+            //     this.putElement = document.querySelector(pPutSelector).createShadowRoot();
+            // } else {
+            //     this.putElement = document.querySelector(pPutSelector);
+            // }
+            
         }
         if (typeof pImpSelector === "string") {
             var template = document.querySelector(pImpSelector);
@@ -251,7 +257,6 @@
                 if (this.putElement) {
                     this.putElement.appendChild(this.element);
                 } else {
-                    // 원본.부모.기준으로 교체함
                     this._importTemp.parentElement.replaceChild(this.element, this._importTemp);
                 }
             }
@@ -546,6 +551,21 @@
             this.tables         = new LArray();
         };
 
+        // 쉐도우돔 설정
+        // 주의! : update 호출전에 사용해야함
+        ContainerAdapter.prototype.setShadow = function(pIsShadow) {
+
+
+
+            if (!this._isShadow && pIsShadow) {
+                this.putElement = this.putElement.createShadowRoot();
+            } else if (this._isShadow && !pIsShadow) {
+                this.putElement = this.putElement.querySelector("*"); // 부모 벗겨냄
+            }
+           
+            this._isShadow = pIsShadow;  // 상태 저장
+        };        
+
         // insertTable => 이름 교체 됨
         ContainerAdapter.prototype.setTableSlot = function(pTableName, pSelector) {
             
@@ -663,21 +683,6 @@
 
         this._event             = new Observer(this, this._onwer);    
         this.eventList      = ["succeed", "failed", "closed"];
-
-        // this.deep       = pIsDeep || true;       // REVIEW : 불필요 
-
-        // 객체 생성 빌더
-        // if (typeof pObject === "string") {
-        //     _elemTemp = document.querySelector(pObject);
-        // }
-        // if (pObject instanceof Element) {
-        //     _original = pObject.cloneNode(this.deep);
-        //     this.element = _original.cloneNode(this.deep);
-        // } else {
-        //     throw new Error('pObject 오류 : pObject=' + pObject);
-        //     return null;
-        // }
-
     }
     (function() {   // prototype 상속
 
@@ -688,20 +693,43 @@
             var elem =  document.createElement('span');
 
             elem.innerHTML = pObject.nodeValue;
-            
-            // return elem.firstChild;  // span 제거 할 경우
-            elem = elem.querySelector("*");
-            // return elem.querySelector("*");
+            elem = elem.querySelector("*"); // span 제거 할 경우
 
             return elem;
         }
 
         function _importScript(pObject) {
-            return null;
+
+            var text  = pObject.text;
+            var elem =  document.createElement('span');
+
+            // 'beforebegin' :element 앞에 
+            // 'afterbegin' : element 안에 가장 첫번째 child  [v]
+            // 'beforeend' : element 안에 가장 마지막 child
+            // 'afterend' : element 뒤에
+            elem.insertAdjacentHTML('afterbegin', text);
+            elem = elem.querySelector("*"); // span 제거 할 경우
+
+            return elem;
         }
 
+        /**
+         * <template> import
+         * @param {*} pObject 
+         * @example
+         * - ie 등 호환성 이슈 있음 !!
+         * - 일부브라우저 polyfill 필요함
+         */
         function _importTemplate(pObject) {
-            return null;
+            
+            var content     = pObject.content;
+            var clone       =  document.importNode(content, true);
+            var elem        =  document.createElement('span');
+
+            elem.appendChild(clone);
+            elem = elem.querySelector("*"); // 일반처리는 span 을 벗겨냄
+            
+            return elem;
         }
 
         function _importElement(pObject) {
@@ -710,7 +738,13 @@
         }
 
         function _importText(pObject) {
-            return null;
+            var text  = pObject;
+            var elem =  document.createElement('span');
+            
+            elem.innerHTML = pObject;
+            elem = elem.querySelector("*");
+
+            return elem;
         }
 
         // 초기화
@@ -745,36 +779,30 @@
             // 슬롯 초기화
             this.clear();
 
-            // 주석 <!-- -->      
-            if (pObject.nodeType === 8) {
+            // 텍스트  <테스트>
+            if (typeof pObject === "string") {
+                elem = _importText(pObject);
 
+            // 주석 <!-- -->      
+            } else if (pObject.nodeType === 8) {
                 elem = _importCommit(pObject);
 
             // <요소><!-- --></요소>   : 요소뒤 주석
-            } else if (pObject.firstChild.nodeType === 8) {      
-            
+            } else if (pObject.firstChild && pObject.firstChild.nodeType === 8) {      
                 elem = _importCommit(pObject.firstChild);
 
             // 스크립트 <script>
             } else if (pObject instanceof HTMLScriptElement) {      
-
                 elem = _importScript(pObject);
 
             // 템플릿 <template>
             // TODO: 태그 이름으로 해야함,  IE 호환성 이슈
             } else if (pObject.content) {
-            
                 elem = _importTemplate(pObject);
 
             // HTML 요소 <요소>
             } else if (pObject instanceof HTMLElement) {
-
                 elem = _importElement(pObject);
-
-            // 텍스트  <테스트>
-            } else if (typeof pObject === "string") {
-
-                elem = _importText(pObject);
 
             } else {
                 throw new Error('pObject 타입 오류 : pObject=' + pOriginal);
