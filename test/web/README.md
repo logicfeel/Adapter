@@ -48,7 +48,7 @@ CD.update(ds, "body", "body2");
 
 ```
 
-## import 형식 - CAd_T01_T02.task.html
+## import 형식 - CAd_T02.task.html
     1. 주석 템플릿
         + 최상위 요소는 1개만 만드는 규칙 
 
@@ -71,29 +71,34 @@ CD.update(ds, "body", "body2");
 
         + setShadow(true); 사용시  putElement 지정후 사용 가능, update 호출 전에 사용
 
-## 슬롯 지정 방식에 비교 - CAd_T01_T03.task.html
+## 슬롯 지정 방식에 비교 - CAd_T03.task.html
     - 메인테이블=레코드  vs  메인테이블!=레코드
     
     - 레코드-O  vs  레코드-X
 
     - 컬럼-서브슬롯-O  vs 컬럼-서브슬롯-X
+    
+    - 예제 방향
+        + 동일한 템플릿으로 슬롯의 다양한 적용 방식
+        
 
-## 멀티 테이블 - CAd_T01_T04.task.html
 
-## 이벤트 연동 - CAd_T01_T05.task.html
+## 멀티 테이블 - CAd_T04.task.html
 
-## 컬럼-콜백  - CAd_T01_T06.task.html
+## 이벤트 연동 - CAd_T05.task.html
+
+## 컬럼-콜백  - CAd_T06.task.html
     - 컬럼 속성 제한
 
-## 템플릿 형식 - CAd_T01_T07.task.html
+## 템플릿 형식 - CAd_T07.task.html
     - 생성시 선택자 vs  템플릿 설정 
 
-## 트렌젝션 사용 - CAd_T01_T08.task.html
+## 트렌젝션 사용 - CAd_T08.task.html
 
-## 데이터셋 변형 - CAd_T01_T09.task.html
+## 데이터셋 변형 - CAd_T09.task.html
     - 추가, 중간추가, 삭제
 
-## 동적 템플릿  vs  정적 템플릿 - CAd_T01_T10.task.html
+## 동적 템플릿  vs  정적 템플릿 - CAd_T10.task.html
 > 정적 템플릿
 
     - 템플릿 구성에 값(속성/요소)만 적용
@@ -120,9 +125,9 @@ CD.update(ds, "body", "body2");
     - 중복 속성 가능, 길이가 동적인 구조에 적합
 
 
-## 다중 컨테이너 연동 - CAd_T01_T11.task.html
+## 다중 컨테이너 연동 - CAd_T11.task.html
 
-## 주요 예제 (List, View, Form) - CAd_T01_T12.task.html
+## 주요 예제 (List, View, Form) - CAd_T12.task.html
 > View
     - 단일 Row, 요소값
 
@@ -132,14 +137,14 @@ CD.update(ds, "body", "body2");
 > List 
     - 복수 Row, 요소값
 
-## 컨테이너 배포 방식 - CAd_T01_T13.task.html
+## 컨테이너 배포 방식 - CAd_T13.task.html
     - 원본 요소에 기능 적용 (정적템플릿)
     
     - 정적 템플릿 방식
 
     - 동적 템플릿 방식 (콜백 + 컬럼속성제한)
 
-## 이슈 및 검토 - CAd_T01_T14.task.html
+## 이슈 및 검토 - CAd_T14.task.html
     - 목록 (리스트+페이지)
 
     - 우편번호, 지역바인딩 요소, 체크박스
@@ -149,7 +154,7 @@ CD.update(ds, "body", "body2");
     - 멀티 DS & 멀티 테이블 활용방안
 
 
-## 기타 - CAd_T01_T15.task.html
+## 기타 - CAd_T15.task.html
 
     - single row 제약조건
 
