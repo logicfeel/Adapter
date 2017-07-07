@@ -1,6 +1,7 @@
 # 컨테이너 어뎁터 예제
 
 ## 일반 테이블 - CAd_T01.task.html
+
     - 슬록지정 : 메인테이블=레코드 | 레코드-Y |  컬럼서브-Y
     
     - 템 플 릿 : 컨테이너 템플릿 (기본)
@@ -49,6 +50,7 @@ CD.update(ds, "body", "body2");
 ```
 
 ## import 형식 - CAd_T02.task.html
+
     1. 주석 템플릿
         + 최상위 요소는 1개만 만드는 규칙 
 
@@ -73,35 +75,67 @@ CD.update(ds, "body", "body2");
 
 ## 슬롯 지정 방식에 비교 - CAd_T03.task.html
     
-    - 레코드-O  vs  레코드-X
+    1. 레코드-O | 레코드슬롯-X | 컬럼슬롯-O
 
-    - 컬럼-서브슬롯-O  vs 컬럼-서브슬롯-X
+    2. 레코드-O | 레코드슬롯-X | 컬럼슬롯-X
+
+    3. 레코드-X | 레코드슬롯-X | 컬럼슬롯-O
+
+    4. 레코드-X | 레코드슬롯-X | 컬럼슬롯-X
     
     - 예제 방향
         + 동일한 템플릿으로 슬롯의 다양한 적용 방식
 
     - 주의 사항
-        + setSlot("tr") 의 선택자는 setTableSlot()의 하위부터 선택 가능함
+        + setSlot("tr")의 선택자는 setTableSlot()의 하위부터 선택 가능함
           (*기본템플릿 사용시)
-        
+ 
 
+## 컬럼-콜백  - CAd_T04.task.html
+    
+    - 컬럼 콜백
 
-## 멀티 테이블 - CAd_T04.task.html
+    - 콜백 속성 제한
 
-## 이벤트 연동 - CAd_T05.task.html
+    - 제목에 컬럼 타이틀 제공
 
-## 컬럼-콜백  - CAd_T06.task.html
-    - 컬럼 속성 제한
+## DS의 다중 테이블 - CAd_T05.task.html
+
+    - 복수 ds, ds의 멀티테이블
+
+## 이벤트 연동 - CAd_T06.task.html
+
+    - (이벤트) 버튼 클릭 -> 데이터셋 추가 -> 컨테이너 update
+
+    - (이벤트) 컨테이너 컬럼 클릭 -> 데이터셋 삭제 -> -> 컨테이너 update
+
+    - 주의사항
+        + update 호출 전에 onUpdated 이벤트 function() 을 등록해야함
+
+        + CD.onUpdated = funciton 에서 커밋처리 하면 갱신 안됨
+
+        + 커밋 시점으로 갱신 여부를 반영 결정
+
 
 ## 템플릿 형식 - CAd_T07.task.html
+
     - 생성시 선택자 vs  템플릿 설정 
 
 ## 트렌젝션 사용 - CAd_T08.task.html
 
+    - 커밋 : 
+
+    - 롤백 : 
+
+    - 커밋 + 롤백  + 커밋 : 
+
+
 ## 데이터셋 변형 - CAd_T09.task.html
-    - 추가, 중간추가, 삭제
+
+    - 추가, 중간추가, 삭제, 수정(방식)
 
 ## 동적 템플릿  vs  정적 템플릿 - CAd_T10.task.html
+
 > 정적 템플릿
 
     - 템플릿 구성에 값(속성/요소)만 적용
@@ -130,7 +164,12 @@ CD.update(ds, "body", "body2");
 
 ## 다중 컨테이너 연동 - CAd_T11.task.html
 
-## 주요 예제 (List, View, Form) - CAd_T12.task.html
+    - 독립 다중 컨테이너 
+
+    - 컬럼 콜백 다중 컨테이너
+
+## 주요 예제 (List, View, Form) - CAd_T12-VFL.task.html
+
 > View
     - 단일 Row, 요소값
 
@@ -140,7 +179,9 @@ CD.update(ds, "body", "body2");
 > List 
     - 복수 Row, 요소값
 
+
 ## 컨테이너 배포 방식 - CAd_T13.task.html
+
     - 원본 요소에 기능 적용 (정적템플릿)
     
     - 정적 템플릿 방식
@@ -148,6 +189,7 @@ CD.update(ds, "body", "body2");
     - 동적 템플릿 방식 (콜백 + 컬럼속성제한)
 
 ## 이슈 및 검토 - CAd_T14.task.html
+
     - 목록 (리스트+페이지)
 
     - 우편번호, 지역바인딩 요소, 체크박스
@@ -163,10 +205,13 @@ CD.update(ds, "body", "body2");
 
     - update 테이블명 매핑
 
-## 이후 작업
-    - select 적용
+    - Row 제한
 
-> 호출방식
+## 이후 작업
+
+    - select 적용 : html 내용에 => 데이서 추출 기능
+
+> 호출방식   => 오히려 혼란의 소지 이후에 검토
 ```javascript
 // 객체 설정방식 검토
 var CD2 = new CAd_T01apter(

@@ -9,33 +9,24 @@
 
 
 <!--putElement-->
-<h3>1. 레코드-O | 레코드슬롯-O | 컬럼슬롯-O</h3>
-<div id="put_1"></div>
-<hr />
-
-<h3>2. 레코드-O | 레코드슬롯-O | 컬럼슬롯-X</h3>
-<div id="put_2"></div>
-<hr />
-
-<h3>3. 레코드-O | 레코드슬롯-X | 컬럼슬롯-O</h3>
+<h3>1. 레코드-O | 레코드슬롯-X | 컬럼슬롯-O</h3>
 <div id="put_3"></div>
 <hr />
 
-<h3>4. 레코드-O | 레코드슬롯-X | 컬럼슬롯-X</h3>
+<h3>2. 레코드-O | 레코드슬롯-X | 컬럼슬롯-X</h3>
 <div id="put_4"></div>
 <hr />
 
-<h3>5. 레코드-X | 레코드슬롯-X | 컬럼슬롯-O</h3>
+<h3>3. 레코드-X | 레코드슬롯-X | 컬럼슬롯-O</h3>
 <div id="put_5"></div>
 <hr />
 
-<h3>6. 레코드-X | 레코드슬롯-X | 컬럼슬롯-X</h3>
+<h3>4. 레코드-X | 레코드슬롯-X | 컬럼슬롯-X</h3>
 <div id="put_6"></div>
 <hr />
 
 <template id="temp_1">
     <div>
-        <span><p>Title <input type="button" name="aa" value="T버튼"></p></span>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -86,59 +77,46 @@
     dt1.rows.add(dr);
 }
 {
-    // 2. 레코드-O | 레코드슬롯-O | 컬럼슬롯-X
-    var CD2 = new ContainerAdapter("#put_2", "#temp_1"); 
+    // 1. 레코드-O | 레코드슬롯-X | 컬럼슬롯-O
+    var CD1 = new ContainerAdapter("#put_3", "#temp_1"); 
 
-    CD2.setTableSlot("body", "div");   
-    CD2.tables["body"].record.setSlot("div",  [
-        {idx: 0, selector: "span"},
-        {idx: 1, selector: "thead tr"},
-        {idx: 2, selector: "tbody tr"}
+    CD1.setTableSlot("body", "tbody");   
+    CD1.tables["body"].record.setSlot("tr");
+    CD1.tables["body"].column.setSlot("td",  [
+        {name: "p1_name", selector: "p"},
+        {name: "p2_name", selector: "p input[value]"}
     ]);
-    CD2.tables["body"].column.setSlot("p");
+    CD1.update(ds, "body");
+}
+{
+    // 2. 레코드-O | 레코드슬롯-X | 컬럼슬롯-X
+    var CD2 = new ContainerAdapter("#put_4", "#temp_1"); 
+
+    CD2.setTableSlot("body", "tbody");   
+    CD2.tables["body"].record.setSlot("tr");
+    CD2.tables["body"].column.setSlot("td", "td");
     CD2.update(ds, "body");
 }
 {
-    // 3. 레코드-O | 레코드슬롯-X | 컬럼슬롯-O
-    var CD3 = new ContainerAdapter("#put_3", "#temp_1"); 
+    // 3. 레코드-X | 레코드슬롯-X | 컬럼슬롯-O
+    var CD3 = new ContainerAdapter("#put_5", "#temp_1"); 
 
-    CD3.setTableSlot("body", "tbody");   
-    CD3.tables["body"].record.setSlot("tr");
-    CD3.tables["body"].column.setSlot("td",  [
+    CD3.setTableSlot("body", "tbody tr");   
+    CD3.tables["body"].column.setSlot("td", [
         {name: "p1_name", selector: "p"},
         {name: "p2_name", selector: "p input[value]"}
     ]);
     CD3.update(ds, "body");
 }
-// {
-//     // 4. 레코드-O | 레코드슬롯-X | 컬럼슬롯-X
-//     var CD4 = new ContainerAdapter("#put_4", "#temp_1"); 
 
-//     CD4.setTableSlot("body", "tbody");   
-//     CD4.tables["body"].record.setSlot("tr");
-//     CD4.tables["body"].column.setSlot("td", "td");
-//     CD4.update(ds, "body");
-// }
-// {
-//     // 5. 레코드-X | 레코드슬롯-X | 컬럼슬롯-O
-//     var CD5 = new ContainerAdapter("#put_5", "#temp_1"); 
+{
+    // 4. 레코드-X | 레코드슬롯-X | 컬럼슬롯-X
+    var CD4 = new ContainerAdapter("#put_6", "#temp_1"); 
 
-//     CD5.setTableSlot("body", "tbody tr");   
-//     CD5.tables["body"].column.setSlot("td", [
-//         {name: "p1_name", selector: "p"},
-//         {name: "p2_name", selector: "p input[value]"}
-//     ]);
-//     CD5.update(ds, "body");
-// }
-
-// {
-//     // 6. 레코드-X | 레코드슬롯-X | 컬럼슬롯-X
-//     var CD6 = new ContainerAdapter("#put_6", "#temp_1"); 
-
-//     CD6.setTableSlot("body", "tbody tr");   
-//     CD6.tables["body"].column.setSlot("td", "td");
-//     CD6.update(ds, "body");
-// }
+    CD4.setTableSlot("body", "tbody tr");   
+    CD4.tables["body"].column.setSlot("td", "td");
+    CD4.update(ds, "body");
+}
 
 console.log('-End-');
 </script>
