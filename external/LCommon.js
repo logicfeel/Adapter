@@ -206,7 +206,7 @@
     // @종속성 : 
     function Observer(pThis, pOnwer) {
         
-        this.isDebug = true;
+        this.isDebug = false;
         this._this = pThis;
         this._onwer = pOnwer;
         this.subscribers = {

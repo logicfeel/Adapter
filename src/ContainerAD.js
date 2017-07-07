@@ -313,11 +313,11 @@
         ContainerAdapter.prototype._createContainer = function(pTableName, pDataRow, pIdx) {
 
             var info                = this._getTableInfo(pTableName);
-            var equelRowCantiner    = this._equelRowCantiner(pTableName);
+            // var equelRowCantiner    = this._equelRowCantiner(pTableName);
             var record              = null;
 
-            // [O, -, -, -] : 레코드 = 메인컨테이너 같음 유무  (공통: 로우블럭X)
-            if (equelRowCantiner) {
+            // // [O, -, -, -] : 레코드 = 메인컨테이너 같음 유무  (공통: 로우블럭X)
+            // if (equelRowCantiner) {
                 
                 // [O, O, -, -] : 레코드 유무-O
                 if (info.hasRecord) {
@@ -344,24 +344,24 @@
                     }
                 }
 
-            // [X, -, -, -] : 레코드 != 메인컨테이너
-            } else {
+            // // [X, -, -, -] : 레코드 != 메인컨테이너
+            // } else {
 
-                // [X, O, -, -] : 레코드 유무-O  (레코드 무조건 있음)
-                if (info.hasRecord) {
-                    record = this._recordManager(pTableName, pDataRow);
-                    this._attachManager(pTableName, record, pIdx);
-                }            
-            }
+            //     // [X, O, -, -] : 레코드 유무-O  (레코드 무조건 있음)
+            //     if (info.hasRecord) {
+            //         record = this._recordManager(pTableName, pDataRow);
+            //         this._attachManager(pTableName, record, pIdx);
+            //     }            
+            // }
         }
 
         ContainerAdapter.prototype._removeContainer = function(pTableName, pDataRow, pIdx) {
 
             var info                = this._getTableInfo(pTableName);
-            var equelRowCantiner    = this._equelRowCantiner(pTableName);
+            // var equelRowCantiner    = this._equelRowCantiner(pTableName);
 
-            // [O, -, -, -] : 레코드 = 메인컨테이너 같음 유무  (공통: 로우블럭X)
-            if (equelRowCantiner) {
+            // // [O, -, -, -] : 레코드 = 메인컨테이너 같음 유무  (공통: 로우블럭X)
+            // if (equelRowCantiner) {
                 
                 // [O, O, -, -] : 레코드 유무-O
                 if (info.hasRecord) {
@@ -383,14 +383,14 @@
                     }
                 }
 
-            // [X, -, -, -] : 레코드 != 메인컨테이너
-            } else {
+            // // [X, -, -, -] : 레코드 != 메인컨테이너
+            // } else {
 
-                // [X, O, -, -] : 레코드 유무-O  (레코드 무조건 있음)
-                if (info.hasRecord) {
-                    this._removeManager(pTableName, pIdx);
-                }            
-            }
+            //     // [X, O, -, -] : 레코드 유무-O  (레코드 무조건 있음)
+            //     if (info.hasRecord) {
+            //         this._removeManager(pTableName, pIdx);
+            //     }            
+            // }
         }        
 
         ContainerAdapter.prototype._replaceContainer = function(pTableName, pDataRow, pIdx) {
@@ -426,22 +426,27 @@
         ContainerAdapter.prototype._createRecord = function(pTableName) {
             
             var info                = this._getTableInfo(pTableName);
-            var equelRowCantiner    = this._equelRowCantiner(pTableName);
+            // var equelRowCantiner    = this._equelRowCantiner(pTableName);
             var record              = null;
             var recordSlotSelector  = null;
             // var slotSelector        = null;
             var recordSlot          = null;
 
-            // 레코드는 복제해서 생성
-            if (equelRowCantiner) {
-                record              = this.template._element.cloneNode(true);
-                recordSlotSelector  = this.tables[pTableName].mainSlotSelector
-                recordSlot          = L.web.querySelecotrOuter(record, recordSlotSelector);
-            } else {
+            // // 레코드는 복제해서 생성
+            // if (equelRowCantiner) {
+                
+            //     // 17-07-07 수정 
+            //     // REVIEW: 확인필요 테스트 안했음
+            //     // record              = this.template._element.cloneNode(true);
+            //     record              = this.tables[pTableName].record._element.cloneNode(true);
+            //     recordSlotSelector  = this.tables[pTableName].record.slotSelector;
+            //     // recordSlotSelector  = this.tables[pTableName].mainSlotSelector
+            //     recordSlot          = L.web.querySelecotrOuter(record, recordSlotSelector);
+            // } else {
                 record              = this.tables[pTableName].record._element.cloneNode(true);
                 recordSlotSelector  = this.tables[pTableName].record.slotSelector;
                 recordSlot          = L.web.querySelecotrOuter(record, recordSlotSelector);
-            }
+            // }
 
             return {
                 record: record,
@@ -463,7 +468,7 @@
             
             var hasColumnSubSlot    = this.tables[pTableName].column.subSlot;
             var column              = null;
-            var equelRowCantiner    = this._equelRowCantiner(pTableName);
+            // var equelRowCantiner    = this._equelRowCantiner(pTableName);
 
 
             // 분기 : 컬럼 생성 | 컬럼서브슬롯 생성

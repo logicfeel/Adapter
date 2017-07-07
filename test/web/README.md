@@ -72,7 +72,6 @@ CD.update(ds, "body", "body2");
         + setShadow(true); 사용시  putElement 지정후 사용 가능, update 호출 전에 사용
 
 ## 슬롯 지정 방식에 비교 - CAd_T03.task.html
-    - 메인테이블=레코드  vs  메인테이블!=레코드
     
     - 레코드-O  vs  레코드-X
 
@@ -80,6 +79,10 @@ CD.update(ds, "body", "body2");
     
     - 예제 방향
         + 동일한 템플릿으로 슬롯의 다양한 적용 방식
+
+    - 주의 사항
+        + setSlot("tr") 의 선택자는 setTableSlot()의 하위부터 선택 가능함
+          (*기본템플릿 사용시)
         
 
 
