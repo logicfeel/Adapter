@@ -10,7 +10,14 @@
 <!--putElement-->
 <h3>이벤트</h3>
 <div id="put_1"></div>
-<!--<hr />-->
+<button id="btn_1">데이터추가</button>
+
+<hr />
+
+<h3>호출구조 요약형</h3>
+<div id="put_2"></div>
+<button id="btn_2">데이터추가</button>
+
 
 <p id="temp_1"><!--
     <div>
@@ -20,11 +27,6 @@
     </div>-->
 </p>
 
-<button id="btn">데이터추가</button>
-<script>
-
-</script>
-
 <script src="../../external/LCommon.web.js"></script>
 <script src="../../external/DataSet.js"></script>
 <script src="../../src/DataAD.js"></script>
@@ -33,7 +35,6 @@
 
 // 기본 ds 구성
 {
-    L.class.Observer
     var ds2 = new DataSet("ds_li");
 
     var dt3 = ds2.tables.add("list"); // 2방식 : 직접 생성 방식 : 테이블
@@ -76,15 +77,51 @@
     CD1.update(ds2, "list");
 }
 {
-    var btn =document.querySelector("#btn");
-    var cnt = 0;
-    btn.onclick = function() {
+    var btn1 =document.querySelector("#btn_1");
+    var cnt_1 = 0;
+    btn1.onclick = function() {
         dr = dt3.newRow();
-        dr["p1_name"] = '1번 추가-' + cnt;
-        dr["p2_name"] = '2번 추가-' + cnt;
+        dr["p1_name"] = '1번 추가-' + cnt_1;
+        dr["p2_name"] = '2번 추가-' + cnt_1;
         dt3.rows.add(dr);
-        cnt++;
+        cnt_1++;
         CD1.update(ds2, "list");
+    };
+}
+// ###########################################
+{
+    var ds1 = new DataSet("ds_li");
+    var dt2 = ds1.tables.add("list2");
+    ds1.tables["list2"].columns.add("p1_name");
+    ds1.tables["list2"].columns.add("p2_name");    
+}
+{
+    // 컬럼 콜백 (호출구조 요약형)
+    var CD2 = new ContainerAdapter("#put_2", "#temp_1"); 
+    CD2.setTableSlot("list", "ul");
+
+    CD2.tables["list"].record.setSlot("ul");
+    CD2.tables["list"].column.setSlot("li");
+    CD2.tables["list"].column.callback = function(pValue, pIndex, pDataRow, pSlotElem, pDataSet) {
+        pSlotElem.onclick = function(event) {
+            pDataRow._dataTable.rows.remove(pDataRow);   // row 삭제
+            CD2.update(pDataRow._dataTable._dataSet, "list2", "list");
+        };
+    };
+
+    CD2.updateCommit(ds1, "list2", "list");
+    CD2.initTableMapping(); 
+}
+{
+    var btn2 =document.querySelector("#btn_2");
+    var cnt_2 = 0;
+    btn2.onclick = function() {
+        dr = dt2.newRow();
+        dr["p1_name"] = '1번 추가-' + cnt_2;
+        dr["p2_name"] = '2번 추가-' + cnt_2;
+        dt2.rows.add(dr);
+        cnt_2++;
+        CD2.update(ds1, "list2", "list");
     };
 }
 

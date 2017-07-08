@@ -7,12 +7,124 @@
 <body>
 <h1>브라우저 테스트 (콘솔로그 참조)</h1>
 
-<h3> - 스타일 : 부트스트립트 css 이용</h3>
+<h3> " 템플릿 형식 "</h3>
 
-<div></div>
-<!--컨테이너-->
+<!--putElement-->
+<div id="put_1"></div>
+<div id="put_2"></div>
+<div id="put_3"></div>
+<div id="put_4"></div>
+
 
 <p id="temp_1"><!--
+    <div>
+        <style>
+            td { color: blue; }
+        </style>
+        <h4>1. 주석 템플릿</h4>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><b><input type="button" name="aa" value="버튼임"></input></b></td>
+                </tr>        
+            </tbody>
+        </table>
+    </div>-->
+</p>
+
+<script type="text/x-my-template" id="temp_2_1"> 
+    <div>
+        <style>
+            td { color: blue; }
+        </style>
+        <h4>2. script 템플릿_1</h4>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><b><input type="button" name="aa" value="버튼임"></input></b></td>
+                </tr>        
+            </tbody>
+        </table>
+    </div>    
+</script>
+
+<script type="text/x-handlebars-template" id="temp_2_2"> 
+    <div>
+        <style>
+            td { color: blue; }
+        </style>
+        <h4>2. script 템플릿_2</h4>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><b><input type="button" name="aa" value="버튼임"></input></b></td>
+                </tr>        
+            </tbody>
+        </table>
+    </div>    
+</script>
+
+<template id="temp_3">
+    <div>
+        <style>
+            td { color: blue; }
+        </style>
+        
+        <h4>3. template 템플릿</h4>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><b><input type="button" name="aa" value="버튼임"></input></b></td>
+                </tr>        
+            </tbody>
+        </table>
+    </div>    
+</template>
+
+<script>
+    var temp_4 = " \
+        <div> \
+        <style> \
+            td { color: blue; } \
+        </style> \
+            <h4>4. String 템플릿</h4> \
+            <table class=\"table table-striped\"> \
+                <thead> \
+                    <tr> \
+                        <th></th> \
+                    </tr> \
+                </thead> \
+                <tbody> \
+                    <tr> \
+                        <td><b><input type=\"button\" name=\"aa\" value=\"버튼임\"></input></b></td>\
+                    </tr> \
+                </tbody> \
+            </table> \
+        </div> ";
+</script>
+
+<div id="temp_5">
+    <h4>5. 요소 템플릿</h4>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -24,8 +136,10 @@
                 <td><b><input type="button" name="aa" value="버튼임"></input></b></td>
             </tr>        
         </tbody>
-    </table>-->
-</p>
+    </table>
+</div>    
+
+
 
 <script src="../../external/LCommon.web.js"></script>
 <script src="../../external/DataSet.js"></script>
@@ -60,20 +174,56 @@
     dr["p1_name"] = '100번내용';
     dr["p2_name"] = '200번내용';
     dt1.rows.add(dr);
+
+    // dt1.rows.removeAt(1);
 }
 {
     // 생성자 ( put선택자, 템플릿선택자 )
-    var CD = new ContainerAdapter("div", "#temp_1"); 
+    var CD1 = new ContainerAdapter("#put_1", "#temp_1"); 
 
-    // 테이블슬롯설정 ( 테이블명, 테이블선택자 )
-    CD.setTableSlot("body", "tbody");   
+    CD1.setTableSlot("body", "tbody");   
+    CD1.tables["body"].record.setSlot("tr");
+    CD1.tables["body"].column.setSlot("td", "td");
+    CD1.update(ds, "body");
+}
+{
+    // 생성자 ( put선택자, 템플릿선택자 )
+    var CD2_1 = new ContainerAdapter("#put_2", "#temp_2_1"); 
 
-    // XX슬롯설정 ( 선택자 [, 슬롯선택자] )
-    CD.tables["body"].record.setSlot("tr");
-    CD.tables["body"].column.setSlot("td", "td b");
+    CD2_1.setTableSlot("body", "tbody");   
+    CD2_1.tables["body"].record.setSlot("tr");
+    CD2_1.tables["body"].column.setSlot("td", "td");
+    CD2_1.update(ds, "body");
+}
+{
+    // 생성자 ( put선택자, 템플릿선택자 )
+    var CD3 = new ContainerAdapter("#put_3", "#temp_3"); 
 
-    // 컨테이너 갱신 ( 데이터셋, 테이블명 [,매핑테이블명] )
-    CD.update(ds, "body");
+    CD3.setTableSlot("body", "tbody");   
+    CD3.tables["body"].record.setSlot("tr");
+    CD3.tables["body"].column.setSlot("td", "td");
+    CD3.update(ds, "body");
+}
+{
+    // 생성자 ( put선택자, 템플릿선택자 )
+    // 선택자가 없으므로 별도로 import 해야함
+    var CD4 = new ContainerAdapter("#put_4"); 
+    CD4.setShadow(true);        // 쉐도우돔 설정
+    CD4.import(temp_4);
+    CD4.setTableSlot("body", "tbody");   
+    CD4.tables["body"].record.setSlot("tr");
+    CD4.tables["body"].column.setSlot("td", "td");
+    CD4.update(ds, "body");
+}
+{
+    // 생성자 ( put선택자, 템플릿선택자 )
+    // 원본 적용방식으로 변형
+    var CD5 = new ContainerAdapter(null, "#temp_5"); 
+
+    CD5.setTableSlot("body", "tbody");   
+    CD5.tables["body"].record.setSlot("tr");
+    CD5.tables["body"].column.setSlot("td", "td");
+    CD5.update(ds, "body");
 }
 
 console.log('-End-');

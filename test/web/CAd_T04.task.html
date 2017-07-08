@@ -20,6 +20,10 @@
 <div id="put_3"></div>
 <hr />
 
+<h3>컬럼서브슬롯 콜백</h3>
+<div id="put_4"></div>
+<hr />
+
 <template id="temp_1">
     <div>
         <table class="table table-striped">
@@ -80,7 +84,7 @@
     CD1.setTableSlot("body", "tbody");   
     CD1.tables["body"].record.setSlot("tr");
     CD1.tables["body"].column.setSlot("td", "td", 
-        function(pValue, pIndex, pRow, pSlotElem) {
+        function(pValue, pIndex, pDataRow, pSlotElem) {
             if ( pValue instanceof Object) pValue = "오브젝트여~~";
             var columnValue = document.createTextNode("value:" + pValue + " c_idx:" + pIndex);
             // 속성 설정
@@ -102,9 +106,9 @@
     CD2.setTableSlot("body", "tbody");   
     CD2.tables["body"].record.setSlot("tr");
     CD2.tables["body"].column.setSlot("td", "td", 
-        function(pValue, pIndex, pRow, pSlotElem) {
+        function(pValue, pIndex, pDataRow, pSlotElem) {
 
-            var column = pRow._dataTable.columns[pIndex];
+            var column = pDataRow._dataTable.columns[pIndex];
             var columnValue;
 
             if (column.attr === "NAME") {
@@ -129,27 +133,52 @@
     // 제목에 컬럼 타이틀 제공
     var CD3 = new ContainerAdapter("#put_3", "#temp_1"); 
  
-    CD3.setTableSlot("head", "thead tr");
-    // CD3.tables["body"].record.setSlot("tr");
+    CD3.setTableSlot("head", "thead");
+    CD3.tables["head"].record.setSlot("tr");
     CD3.tables["head"].maxRow = 1;
     CD3.tables["head"].column.setSlot("th", "th",
-        function(pValue, pIndex, pRow, pSlotElem) {
+        function(pValue, pIndex, pDataRow, pSlotElem) {
 
-            var column = pRow._dataTable.columns[pIndex];
-            var columnValue;
-            columnValue = document.createTextNode(column.caption);
+            var column = pDataRow._dataTable.columns[pIndex];
+            var columnValue = document.createTextNode(column.caption);
 
             return columnValue;
         }
     );
-    
+
     CD3.setTableSlot("body", "tbody");
     CD3.tables["body"].record.setSlot("tr");
-    CD3.tables["body"].column.setSlot("td", "input[value]");
-    CD3.update(ds, "body");
-    CD3.update(ds, "body", "head");
+    CD3.tables["body"].column.setSlot("td", "p input[value]");
+    
+    CD3.update(ds, "body", "head");     // head 바인딩
+    CD3.initTableMapping();             // * 동일 테이블 사용시 매핑 초기화
+    CD3.update(ds, "body");             // body 바인딩
 }
+{
+    // 컬럼서브슬롯 콜백
+    var CD4 = new ContainerAdapter("#put_4", "#temp_1"); 
 
+    CD4.setTableSlot("body", "tbody");   
+    CD4.tables["body"].record.setSlot("tr");
+    CD4.tables["body"].column.setSlot("td", [
+        {   
+            name: "p1_name", 
+            selector: "p", 
+            callback: function(pValue, pIndex, pDataRow, pSlotElem) {
+                pSlotElem.setAttribute("class", "active");    
+            }
+        },
+        {   
+            name: "p2_name", 
+            selector: "p input[value]", 
+            callback: function(pValue, pIndex, pDataRow, pSlotElem) {
+                pSlotElem.setAttribute("class", "btn-warning");    
+            }
+        }
+    ]);
+
+    CD4.update(ds, "body");
+}
 console.log('-End-');
 </script>
 

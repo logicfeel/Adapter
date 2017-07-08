@@ -99,6 +99,15 @@ CD.update(ds, "body", "body2");
 
     - 제목에 컬럼 타이틀 제공
 
+        + 주의! : initTableMapping() 매핑테이블 초기화 할경우 (table을 이중으로 사용하는 경우)
+                * CD.update(..) 호출할 경우 매핑을 꼭! 명시해 줘야 함
+
+        + 주의! : 복수의 테이블을 update 할 경우 (내부 템플릿 이용시) setSlot(설정) 완료후
+                 하위에서 일괄 호출해야 임의의 템플릿 조각이 정리됨
+
+    - 컬럼서브슬롯 콜백
+
+
 ## DS의 다중 테이블 - CAd_T05.task.html
 
     - 복수 ds, ds의 멀티테이블
@@ -108,6 +117,10 @@ CD.update(ds, "body", "body2");
     - (이벤트) 버튼 클릭 -> 데이터셋 추가 -> 컨테이너 update
 
     - (이벤트) 컨테이너 컬럼 클릭 -> 데이터셋 삭제 -> -> 컨테이너 update
+
+    - 공통
+        + 매핑테이블 이용함 
+            * CD2.updateCommit(ds1, "list2", "list");
 
     - 주의사항
         + update 호출 전에 onUpdated 이벤트 function() 을 등록해야함

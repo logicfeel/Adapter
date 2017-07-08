@@ -30,9 +30,9 @@
         this._event         = new Observer(this, this);
         this._tableMapping  = [];
         this.eventList      = ["fill", "update"];
-        this.onFilled       = null;       // 완료후 호출 (pDataSet, pTableName)
-        this.onUpdated      = null;        // 완료후 호출 (pDataSet, pTableName)
-
+        this.onFilled       = null;         // 완료후 호출 (pDataSet, pTableName)
+        this.onUpdated      = null;         // 완료후 호출 (pDataSet, pTableName)
+        this._dataSet       = null;         // update(ds) 호출시 참조값 보관
     }
     (function() {   // prototype 상속
 
@@ -58,7 +58,10 @@
             }
             this._tableMapping.push(tableMapping);
         };
-        
+        DataAdapter.prototype.initTableMapping = function() {
+            this._tableMapping = [];
+        }
+
         DataAdapter.prototype.getAdapterName = function(pDataTableName) {
 
             for (var i = 0; i < this._tableMapping.length; i++) {
@@ -106,6 +109,8 @@
             var cTables = null;
             var aTable  = "";
             var rowCnt  = 0;
+
+            this._dataSet = pDataSet;   // ds 참조값 저장
 
             if (pAdapterName) {
                 this._setTableMapping(pAdapterName, pTableName);

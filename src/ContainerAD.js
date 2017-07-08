@@ -174,7 +174,10 @@
 
             if (pCallback && typeof pCallback === "function") {
                 columnChild = pCallback.call(this, pRowValue, pColumnIdx, pDataRow, pColumClone);
-            } else {
+
+            } 
+            
+            if (!columnChild) {
                 stIdx = pSlotSelector.indexOf("[");
                 endIdx = pSlotSelector.indexOf("]");
 
@@ -235,11 +238,11 @@
             // 최대 바인딩수 제한 
             // REVIEW : 상위로 올릴지 여부 검토
             if (this.tables[pTableName].maxRow === 0 || 
-                this.tables[pTableName].recordCount <= this.tables[pTableName].maxRow) {
+                this.tables[pTableName].recordCount < this.tables[pTableName].maxRow) {
                     info.mainSlot.insertBefore(pRecord, info.mainSlot.childNodes[index]);
                     
                     // 레코드 카운터 추가 (!삭제 변경시 관리 해야 함)
-                    this.tables[pTableName].recordCount++;                      
+                    this.tables[pTableName].recordCount++;
             }
 
             // 문서에 붙임
@@ -284,7 +287,7 @@
 
             // REVIEW : 방식에 따라서 fill 위치와 연관 있음 => 당연한 결과
             if (this.tables[pTableName].maxRow === 0 || 
-                this.tables[pTableName].recordCount <= this.tables[pTableName].maxRow) {
+                this.tables[pTableName].recordCount < this.tables[pTableName].maxRow) {
                 info.mainSlot.removeChild(info.mainSlot.childNodes[index]);
 
                 // 레코드 카운터 추가 (!삭제 변경시 관리 해야 함)
@@ -453,7 +456,7 @@
             
             var column              = this.tables[pTableName].column._element;
             var columnSlotSelector  = this.tables[pTableName].column.slotSelector;;
-            var columnCallback      = this.tables[pTableName].column._callback;
+            var columnCallback      = this.tables[pTableName].column.callback;
             var columnIdx           = pDataRow.indexOf(pRowValue);
             var columnClone         = column.cloneNode(true);
             var columnChild         = null;
@@ -575,6 +578,15 @@
                 // this.putElement = pObject;
             }
             // pObject.outerHTML = '<div></div>';
+        };
+
+        ContainerAdapter.prototype.updateCommit = function(pDataSet, pTableName, pAdapterName) {
+                
+                // 콜백 이벤트 등록
+                this.onUpdated = function(pDataSet, pTableName) {
+                    pDataSet.acceptChanges(); 
+                };
+                this.update(pDataSet, pTableName, pAdapterName);
         };
 
         ContainerAdapter.prototype.insertCommand = function(pTableName, pDataRow, pIdx) {
@@ -841,7 +853,7 @@
         TemplateElement.call(this, pOnwerContainerAdapter);  // ### prototype 상속 ###
         
         this.name               = pAttrName;
-        this._callback          = null;
+        this.callback           = null;
         this.slot               = null;
         this.slotSelector       = null;
         this.subSlot            = null;
@@ -874,7 +886,7 @@
         TemplateSlotElement.prototype.clear = function() {
             this.parent.clear.call(this);    // 오버라이딩 메소드 호출
             
-            this._callback          = null;
+            this.callback          = null;
             this.slot               = null;
             this.slotSelector       = null;
             this.subSlot            = null;
@@ -931,7 +943,7 @@
 
             // TODO: callback 온 경우 컬럼인 경우인지 확인 검사        
             if (typeof pCallback === "function") {
-                this._callback = pCallback;
+                this.callback = pCallback;
             }
         }
 
@@ -975,7 +987,7 @@
 
             // TODO: callback 온 경우 컬럼인 경우인지 확인 검사        
             if (typeof pCallback === "function") {
-                this._callback = pCallback;
+                this.callback = pCallback;
             }
 
             return elem;
@@ -1009,7 +1021,7 @@
 
             // TODO: callback 온 경우 컬럼인 경우인지 확인 검사        
             if (typeof pCallback === "function") {
-                this._callback = pCallback;
+                this.callback = pCallback;
             }
 
             if (pSubSlot) {
