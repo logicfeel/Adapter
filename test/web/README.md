@@ -122,6 +122,8 @@ CD.update(ds, "body", "body2");
         + 매핑테이블 이용함 
             * CD2.updateCommit(ds1, "list2", "list");
 
+        + CD2.initTableMapping(); : 매핑테이블 초기화 (*동일 테이블 사용시)
+
     - 주의사항
         + update 호출 전에 onUpdated 이벤트 function() 을 등록해야함
 
@@ -132,7 +134,25 @@ CD.update(ds, "body", "body2");
 
 ## 템플릿 형식 - CAd_T07.task.html
 
-    - 생성시 선택자 vs  템플릿 설정 
+    - C.Ad 생성후 템플릿 등록 방식
+    
+    - C.Ad 생성시 템플릿 선택자 지정 방식
+
+    - 내부 템플릿 이용  (기존 예제 많음) 
+
+    - 외부 템플릿 이용
+
+    - 공통
+        + 주석형 템플릿 이용 (IE 호환성 문제)
+
+    - 디자인의 다양한 사례 검토
+
+        + 테이블 TD 안에 li 목록 배치 할 경우 - OK
+
+        + 
+
+
+
 
 ## 트렌젝션 사용 - CAd_T08.task.html
 
@@ -145,7 +165,7 @@ CD.update(ds, "body", "body2");
 
 ## 데이터셋 변형 - CAd_T09.task.html
 
-    - 추가, 중간추가, 삭제, 수정(방식)
+    - 추가, 중간에 추가, 삭제, 수정(방식)
 
 ## 동적 템플릿  vs  정적 템플릿 - CAd_T10.task.html
 

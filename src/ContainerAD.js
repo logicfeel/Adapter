@@ -569,9 +569,9 @@
         };
 
         // 컨테이너 객체 초기화
-        ContainerAdapter.prototype.import = function(pObject) {
+        ContainerAdapter.prototype.import = function(pObject, pSelector) {
             
-            this.template.importSlot(pObject);
+            this.template.importSlot(pObject, pSelector);
             if (this.putElement === null) {
                 this._importTemp = pObject;
                 // pObject.outerHTML = "<div id='abcd'>a</div>";
@@ -752,7 +752,7 @@
         ];
 
 
-        TemplateElement.prototype.importSlot = function(pObject) {
+        TemplateElement.prototype.importSlot = function(pObject, pSelector) {
             
             var elem        = null;
 
@@ -788,6 +788,11 @@
                 throw new Error('pObject 타입 오류 : pObject=' + pOriginal);
             }
             
+            // 선택자가 있는 경우
+            if (typeof pSelector === "string") {
+                elem  = L.web.querySelecotrOuter(elem, pSelector);
+            }
+
             // 리턴 및 this 설정
             this._element   = elem;
             this._original  = elem.cloneNode(true); // 복제본 삽입
@@ -947,17 +952,36 @@
             }
         }
 
+        /**
+         * 
+         * fuction(pObject, pSlotObject, pCallback)
+         * - pObject : Element타입, String(선택자)
+         * + importSlot() 외부에서 템플릿을 가져와서 슬롯을 지정한다는 의미
+         * + 
+         */
         // (pObject요소 [, 슬롯선택자 | {서브슬롯선택자}, 콜백] )
-        TemplateSlotElement.prototype.importSlot = function(pObject, pSlotSelector, pCallback) {
+        // <= 교체되여함
+        // (pObject요소 [선택자, 슬롯선택자 | {서브슬롯선택자}, 콜백] )
+        TemplateSlotElement.prototype.importSlot = function(pObject, pSelector, pSlotSelector, pCallback) {
             
             var elem        = null;
             var _refElem    = null;
 
             // 슬롯 초기화
             this.clear();
+            pSlotSelector = pSlotSelector || pSelector;
+
+            // pObject 선택자 string 인 경우
+            if (typeof pObject === "string") {
+                pObject = document.querySelector(pObject);
+            }
+            
+            if (typeof pObject !== "object") {
+                throw new Error('오류 pObject 없음 pObject :' + pObject);
+            }
 
             // 오버라이딩 부모 메소드 호출
-            elem = this.parent.importSlot.call(this, pObject);
+            elem = this.parent.importSlot.call(this, pObject, pSelector);
 
             if (!(elem instanceof HTMLElement)) {
                 throw new Error('오류 HTMLElement 타입아님 ' + elem);
@@ -992,67 +1016,6 @@
 
             return elem;
         }
-
-        // TODAY: 테스트후 삭제
-        TemplateSlotElement.prototype.__importSlot = function(pObject, pSelector, pCallback, pSubSlot) {
-            
-            var elem        = null;
-
-            // 슬롯 초기화
-            this.clear();
-
-            // 오버라이딩 부모 메소드 호출
-            elem = this.parent.importSlot.call(this, pObject);
-
-
-            // 셀렉터 있는 경우 main 이외
-            // !! 서브셀렉터느 안됨.
-            if (pSelector && !pSubSlot) {
-                
-                L.web.cutElement(this._element, pSelector, true);
-                
-                var _refElem = null;
-
-                _refElem = L.web.querySelecotrOuter(this._element, pSelector);
-
-                this.slot = _refElem;
-                this.slotSelector = pSelector;            
-            }
-
-            // TODO: callback 온 경우 컬럼인 경우인지 확인 검사        
-            if (typeof pCallback === "function") {
-                this.callback = pCallback;
-            }
-
-            if (pSubSlot) {
-                if (pSubSlot instanceof Array && pSubSlot[0].selector) {
-                    this.subSlot = pSubSlot;
-                } else {
-                    throw new Error('subSlot 형식 오류 :');                
-                }
-            }
-
-            return elem;
-        }
-
-
-        // 슬롯이 추가되고 자식은 삭제됨
-        TemplateSlotElement.prototype._setSlot = function(pSelector) {
-            
-            var refElem = null;
-            
-            // 레퍼방식으로 querySelector        
-            refElem = L.web.querySelecotrOuter(this._element, pSelector);
-            this.slot = refElem;
-            this.slotSelector = pSelector
-
-            // 자식 노드 삭제
-            var maxLength = refElem.childNodes.length;
-            for (var i = maxLength - 1; i >= 0; i--) {  // NodeList 임
-                refElem.removeChild(refElem.childNodes[i]);
-            }
-        };
-
         
         // 최상위를 슬롯 배치
         TemplateSlotElement.prototype.defaultSetSlot = function() {
@@ -1063,7 +1026,7 @@
 
                 firstNodeSelector = String(this._original.nodeName);
                 firstNodeSelector = firstNodeSelector.toLowerCase();
-                this._setSlot(firstNodeSelector);
+                this.setSlot(firstNodeSelector);
 
                 return true;
 
@@ -1104,6 +1067,51 @@
 
     }());
 
+    // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    // pObjct : Element, selector => X 없음
+    // 종속성 : DOM Element
+    function TemplateSlot() {
+
+        this.element           = null;
+        this.TSlot              = new TemplateSlotElement(this, "etc");    
+    }
+    (function() {   // prototype 상속
+
+        // 초기화
+        TemplateSlot.prototype.clear = function() {
+            
+            this._original          = null;
+            this._element           = null;
+        };
+
+        var mapping  = "String"; 
+        var subSlot  = [
+            {name: "s1_name", selector: "p"},
+            {name: "s2_name", selector: "td"}
+        ]; 
+        
+        var mapping  = [
+            {name: "s1_name", value: "서브슬롯1"},
+            {name: "s2_name", value: "서브슬롯2"}
+        ]; 
+        // LArray 으로의 검토
+
+        // 템플릿 + 데이터 바인딩
+        TemplateSlot.prototype.binding = function(pObject) {
+            
+            var text    = document.createTextNode(pObject);
+            
+            template    = this.TSlot._element.cloneNode(true);
+
+        };        
+
+
+        TemplateSlot.prototype.publish = function() {
+            // this.TSlot._element            
+        }
+
+    }());
+
 
     // 배포 (RequireJS 용도)
     if (typeof module !== 'undefined' && module.exports) {
@@ -1115,5 +1123,7 @@
     // 전역 배포
     _G.ContainerAdapter     = ContainerAdapter;
     _G.TemplateElement      = TemplateElement;
+    _G.TemplateSlotElement  = TemplateSlotElement;
+    _G.TemplateSlot         = TemplateSlot;
 
 }(this));
