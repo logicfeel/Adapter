@@ -146,16 +146,77 @@
 // }
 
 {
-    var ts = new TemplateSlotElement(null, 'inner');
-    ts.importSlot("#temp_2", "ul", "li");
-    
+    var TS = new TemplateSlotElement(null, 'tempSlot');
+    TS.import("#temp_2");
+    // (선택자 [, 슬롯 | 서브슬롯])
+    TS.setSlot("ul", "li");     // 동일한 구조 슬롯
+    TS.setSlot("ul", [
+        {
+            name: "p1_name", selector: "p"
+        },
+        {
+            name: "p2_name", selector: "p input[value]"
+        },
+        {
+            name: "p3_name", selector: "p span", callback:
+            function(value) {
+                // ... 하위로 계속 확장
+            }
+        }
+    ]); // 다른 구조 슬롯
+
+    TS.slotMapping("p1_name", "s1_name");   // <== 유력
+    TS.slotMapping("p2_name", "s2_name");   // <== 유력
+    TS.slotMapping("p3_name", "s3_name");   // <== callback 객체를 넘기는 경우
+    TS.slotMapping("p4_name", "s3_name[0].title");   // <== 유력
+    TS.slotMapping("p5_name", "s3_name.tel");   // <== 유력
+
+    // 대상이름이었으나 제외됨
+    // TS.setColumnMapping("p1_name", "s1_name");
+    // TS.setSlotMapping("p1_name", "s1_name");
+    // TS.setColumnMap("p1_name", "s1_name");
+    // TS.setSlotMap("p1_name", "s1_name");
+    // TS.ColumnMapping("p1_name", "s1_name");
+
+    // 타입 1
+    TS.update({
+        name: "p1_name", value: "P1객체값"
+    });
+
+    // 타입 2    *배열
+    TS.update([
+        {name: "p1_name", value: "P1객체값"},
+        {name: "p2_name", value: "P2객체값"},
+    ]);
+
+    // 타입 3  **  "확정 !!!!""
+    TS.update( {s1_name: "P1객체값", s2_name: "P2객체값", s3_name: {/*객체*/}} );
+
+    // 타입 4  *배열
+    TS.update([
+        {p1_name: "P1객체값", p2_name: "P2객체값", p3_name: {/*객체*/}},
+        {p1_name: "P3객체값", p2_name: "P4객체값", p3_name: {/*객체*/}}
+    ]);    
+
 
     var put_4 = document.querySelector("#put_4");
     put_4.appendChild(ts._original);
     // ts.importSlot("#temp_2");
 
-}
+    function callback(pValue, pIndex, pDataRow, pSlotElem) {
 
+    }
+}
+{
+    var TS = new TemplateSlotElement(null, '#temp_00');
+     TS.setSlot("ul", [
+        { name: "p1_name", selector: "p" },
+        { name: "p2_name", selector: "p input[value]" },
+        { name: "p3_name", selector: "p span", callback: function(value) { /*. 하위로 계속 확장 */ }        }
+    ]); 
+    TS.update( {s1_name: "P1객체값", s2_name: "P2객체값", s3_name: {/*객체*/}} );
+
+}
 console.log('-End-');
 </script>
 

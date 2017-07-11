@@ -1095,6 +1095,9 @@
             {name: "s2_name", value: "서브슬롯2"}
         ]; 
         // LArray 으로의 검토
+        
+        TemplateSlot.prototype.import = function(pObject) {
+        };
 
         // 템플릿 + 데이터 바인딩
         TemplateSlot.prototype.binding = function(pObject) {
