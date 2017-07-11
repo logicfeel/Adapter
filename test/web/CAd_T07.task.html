@@ -165,11 +165,11 @@
         }
     ]); // 다른 구조 슬롯
 
-    TS.slotMapping("p1_name", "s1_name");   // <== 유력
-    TS.slotMapping("p2_name", "s2_name");   // <== 유력
-    TS.slotMapping("p3_name", "s3_name");   // <== callback 객체를 넘기는 경우
-    TS.slotMapping("p4_name", "s3_name[0].title");   // <== 유력
-    TS.slotMapping("p5_name", "s3_name.tel");   // <== 유력
+    TS.slotMapping.add("p1_name", "s1_name");   // <== 유력
+    TS.slotMapping.add("p2_name", "s2_name");   // <== 유력
+    TS.slotMapping.add("p3_name", "s3_name");   // <== callback 객체를 넘기는 경우
+    TS.slotMapping.add("p4_name", "s3_name[0].title");   // <== 유력
+    TS.slotMapping.add("p5_name", "s3_name.tel");   // <== 유력
 
     // 대상이름이었으나 제외됨
     // TS.setColumnMapping("p1_name", "s1_name");
