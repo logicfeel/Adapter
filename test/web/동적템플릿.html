@@ -1,0 +1,163 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>브라우저 테스트</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<body>
+<h1>브라우저 테스트 (콘솔로그 참조)</h1>
+
+<h3> - 동적 템플릿 예제</h3>
+
+<!--putElement-->
+<div></div>
+
+<p id="temp_1"><!--
+    <table class="table table-striped">
+        <tbody>
+            <tr>
+                <td><b>버튼앞<input type="button" name="aa" value="버튼임"></input>버튼뒤 </b></td>
+            </tr>        
+        </tbody>
+    </table>-->
+</p>
+
+<!--동적템플릿 구성-->
+<div class="panel panel-default">
+
+    <div class="panel-body">
+    
+    <!--테이블-->
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Firstname</th>
+            <th>Lastname</th>
+            <th>Email</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>John</td>
+            <td>Doe</td>
+            <td>john@example.com</td>
+        </tr>
+        <tr>
+            <td>Mary</td>
+            <td>Moe</td>
+            <td>mary@example.com</td>
+        </tr>
+        <tr>
+            <td>July</td>
+            <td>Dooley</td>
+            <td>july@example.com</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!--페이징-->
+    <ul class="pagination">
+        <li><a href="#">1</a></li>
+        <li class="active"><a href="#">2</a></li>
+        <li><a href="#">3</a></li>
+        <li><a href="#">4</a></li>
+        <li><a href="#">5</a></li>
+    </ul>
+    <!--목록 그룹-->
+    <ul class="list-group">
+    <li class="list-group-item">First item</li>
+    <li class="list-group-item">Second item</li>
+    <li class="list-group-item">Third item</li>
+    </ul>
+
+    <!--폼 그룹-->
+    <h2>폼 그룹</h2>
+    <form action="/action_page.php">
+        <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+        </div>
+        <div class="form-group">
+        <label for="pwd">Password:</label>
+        <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pwd">
+        </div>
+        <div class="checkbox">
+        <label><input type="checkbox" name="remember"> Remember me</label>
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+
+    </div>
+</div>
+
+<script src="../../external/LCommon.web.js"></script>
+<script src="../../external/DataSet.js"></script>
+<script src="../../src/DataAD.js"></script>
+<script src="../../src/ContainerAD.js"></script>
+<script>
+
+
+/**
+ * <div> 컨텍스트
+ */
+
+
+/**
+ * 스키마 (정적구조)
+ */
+var list_struct = {
+    title: "타이틀"
+};
+
+
+/**
+ * 레이아웃
+ * 이후 auto레이아웃 가능하기도함!!
+ */
+var layout = {
+    p_name1: "컨네이너",
+    p_name2: {
+        div: "aaa",
+        div2: "aaa"
+    },
+    p_name3: [
+        {
+            div: "aaa",
+            div2: "aaa"
+        }
+    ]
+};
+
+
+
+/**
+ * CAd 생성 및 설정(스키마)
+ */
+
+
+/**
+ * 이벤트 등록(매핑/주입)
+ */
+
+
+{
+    // 생성자 ( put선택자, 템플릿선택자 )
+    var CD2_1 = new TemplateLayout("#put_2", {
+        container: {
+            grid: "12"
+        }
+    });
+    
+
+
+    CD2_1.setTableSlot("body", "tbody");   
+    CD2_1.tables["body"].record.setSlot("tr");
+    CD2_1.tables["body"].column.setSlot("td", "td");
+    CD2_1.update(ds, "body");
+}
+
+console.log('-End-');
+</script>
+
+</body>
+</html>
