@@ -1,0 +1,125 @@
+<script>
+{
+    // 기본구조
+    var CD1 = new ContainerAdapter("#put_1", "#temp_1"); 
+
+    CD1.setTableSlot("body", "tbody");   
+    CD1.tables["body"].record.setSlot("tr");
+    CD1.tables["body"].column.setSlot("td", "td");
+
+    CD1.update(ds, "body");
+}
+{
+    // 서브슬롯 지정 
+    var CD3 = new ContainerAdapter("#put_5", "#temp_1"); 
+
+    CD3.setTableSlot("body", "tbody tr");   
+    CD3.tables["body"].column.setSlot("td", [
+        {name: "p1_name", selector: "p"},
+        {name: "p2_name", selector: "p input[value]"}
+    ]);
+
+    CD3.update(ds, "body");
+}
+{
+    // 컬럼 콜백
+    var CD1 = new ContainerAdapter("#put_1", "#temp_1"); 
+
+    CD1.setTableSlot("body", "tbody");   
+    CD1.tables["body"].record.setSlot("tr");
+    CD1.tables["body"].column.setSlot("td", "td", 
+        function(pValue, pIndex, pDataRow, pSlotElem) {
+            var columnValue = document.createTextNode("value:" + pValue + " c_idx:" + pIndex);
+            return columnValue;
+        }
+    );
+
+    CD1.update(ds, "body");
+}
+{
+    // 컬럼서브슬롯 콜백
+    var CD4 = new ContainerAdapter("#put_4", "#temp_1"); 
+
+    CD4.setTableSlot("body", "tbody");   
+    CD4.tables["body"].record.setSlot("tr");
+    CD4.tables["body"].column.setSlot("td", [
+        {   
+            name: "p1_name", 
+            selector: "p", 
+            callback: function(pValue, pIndex, pDataRow, pSlotElem) {
+                pSlotElem.setAttribute("class", "active");    
+            }
+        },
+        {   
+            name: "p2_name", 
+            selector: "p input[value]", 
+            callback: function(pValue, pIndex, pDataRow, pSlotElem) {
+                pSlotElem.setAttribute("class", "btn-warning");    
+            }
+        }
+    ]);
+
+    CD4.update(ds, "body");
+}
+// ####################################################
+{
+    // 객체슬롯(템플릿) 시나리오
+    var CD1 = new ContainerAdapter("#put_1", "#temp_1"); 
+
+    CD1.setTableSlot("body", "tbody");
+    CD1.tables["body"].record.setSlot("tr");
+    CD1.tables["body"].column.setSlot("td", "td");
+    
+    // 객체 템플릿 설정
+    // CD1.tables["body"].column.
+
+    // 상위 속성 정의 작업중..
+    CD1.tables["body"].setAttr({
+        radio: "슬롯설정"
+    });
+
+    CD1.update(ds, "body");
+}
+{
+    // 컬럼 콜백 + 객체 템플릿 
+    var CD1 = new ContainerAdapter("#put_1", "#temp_1"); 
+
+    CD1.setTableSlot("body", "tbody");   
+    CD1.tables["body"].record.setSlot("tr");
+    CD1.tables["body"].column.setSlot("td", "td", 
+        function(pValue, pIndex, pDataRow, pSlotElem) {
+            var TS = new TemplateSlot();
+            TS.setSlot("ul", "li");
+            TS.update(pValue);
+            return TS;
+        }
+    );
+
+    CD1.update(ds, "body");
+}
+{
+    // 컬럼 콜백 + 객체 템플릿 (서브슬롯) <== 2개 이상의 파생 속성을 설정할 경우
+    /**
+     * 객체 템플릿의 상위 정의?
+     */
+    var CD1 = new ContainerAdapter("#put_1", "#temp_1"); 
+
+    CD1.setTableSlot("body", "tbody");   
+    CD1.tables["body"].record.setSlot("tr");
+    CD1.tables["body"].column.setSlot("td", "td", 
+        function(pValue, pIndex, pDataRow, pSlotElem) {
+            var TS = new TemplateSlot();
+            TS.setSlot("ul", [
+                { name: pValue.title, selector: "p"},
+                { name: pValue.value, selector: "p input[value]"}
+            ]);
+            TS.update(pValue);
+            return TS;
+        }
+    );
+
+    CD1.update(ds, "body");
+}
+
+console.log('-End-');
+</script>
