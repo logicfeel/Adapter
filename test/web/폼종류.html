@@ -1,0 +1,62 @@
+
+{ 텍스트 }
+    - 스키마 : 
+    - [선택] : 이름
+    - 값 : value-속성값
+    - 스케치 : selector 바인딩 
+<div class="form-group">
+  <label for="usr">Name:</label>
+  <input type="text" class="form-control" id="usr">
+</div>
+
+
+{ 텍스트박스 }
+    - 스키마 : 
+    - [선택] : 이름
+    - 값 : textarea-요소값
+    - 스케치 : selector 바인딩 
+<div class="form-group">
+  <label for="comment">Comment:</label>
+  <textarea class="form-control" rows="5" id="comment"></textarea>
+</div>
+
+
+{ 체크박스 } => 코드와 값 연동 필요
+    - 스키마 : 이름(요소값), 값(속성값)
+    - [선택] : 기본값
+    - 값 : value-속성값
+    * 값의 boolean 여부에 따라  checked 속성유무 표시
+    - 스케치 : 
+<label class="checkbox-inline"><input type="checkbox" value="">Option 1</label>
+<label class="checkbox-inline"><input type="checkbox" value="">Option 2</label>
+<label class="checkbox-inline"><input type="checkbox" value="">Option 3</label>
+
+
+{ 라디오-그룹 } => 코드와 값 연동 필요
+    - 스키마 : 이름(요소값), 값(속성값)
+    - [선택] : 기본값, 상위그룹 명  
+    - 값 : 속성값
+    * 값이 같으면 checked 속성유무 표시
+
+<label class="radio-inline"><input type="radio" name="optradio">Option 1</label>
+<label class="radio-inline"><input type="radio" name="optradio">Option 2</label>
+<label class="radio-inline"><input type="radio" name="optradio">Option 3</label>
+
+
+{ 셀렉트-그룹 } => 코드와 값 연동 필요
+    - 스키마 : 이름(요소값), 값(속성값), 상위그룹 명
+    - [선택] : 기본값, 
+    - 값 : 속성값
+    * 값이 같으면 selected 속성유무 표시
+<div class="form-group">
+  <label for="sel1">Select list:</label>
+  <select class="form-control" id="sel1">
+    <option>1</option>
+    <option>2</option>
+    <option>3</option>
+    <option>4</option>
+  </select>
+</div>
+
+공통
+    - 속성명, 속성값 바인딩 : class, id, max, size 등 지정할 필요있음

@@ -120,6 +120,48 @@
 
     CD1.update(ds, "body");
 }
+{
+    var CD1 = new ContainerAdapter("#put_1", "#temp_1");
+    CD1.tables[0].value.importSlot("템플릿위치","시작위치", {
+        attr: "selected",
+        selector: {
+
+        }
+    });
+
+}
+{
+    var selector = {
+        name: "",
+        selector: {
+            attr: "class",
+            selector: "input[class]"
+        }
+    };
+
+    var selector = {
+        name: "",
+        selector: [
+            {
+                attr: "class",
+                selector: "input[class]"
+            },
+            {
+                attr: "class",
+                callback: function() {
+                    console.log('내부 셀랙터');
+                }
+            }
+        ]
+    };
+}
+{
+    // 객체 슬롯의 예상 시나리오
+    var obj = {
+        
+    };
+}
+
 
 console.log('-End-');
 </script>

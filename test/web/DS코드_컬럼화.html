@@ -1,0 +1,56 @@
+<script>
+
+    // [공통]
+    var ds = new DataSet("ds");
+    var dt1 = ds.tables.add("Area_code"); 
+    var dr = null;
+
+    /**
+     * 컬럼 "명" 코드화
+     * 장점 :
+     *  - 컬럼명을 몰라도 접근 가능
+     *  - 컬럼슬롯에서 매핑이 용의함
+     *  - 단순함
+     *  - 스키마 구조로만 데이터 표현에 유리
+     * 단점 :
+     *  - 1로우 방식으로 제한해야함
+     *  - 컬럼에 추가 속성 정의를 임으로 정해야함
+     *  - 데이터 값 => 컬럼명으로 매칭할 필요
+     */
+    ds.tables["Area_code"].columns.add("A01");
+    // ds.tables["Area_code"].columns["A01"].type = DataColumn;
+    ds.tables["Area_code"].columns.add("A02");
+
+    // dr = dt1.newRow();
+    // dr["A01"] = '전국';
+    // dr["A01"].class = ".top"; 
+    // dr["A02"] = '서울';
+    // dr["A02"].class = ".bottom";
+    // dt1.rows.add(dr);
+
+    /**
+     * 컬럼 "값" 코드화
+     * 장점 : 
+     *  - row의 그룹화에 유리함
+     *  - 속성 추가가 용의함
+     *  - 동일 데이터 기준임
+     * 단점 :
+     *  - 컬럼명을 지정 또는 알아야함  (알수 있음)
+     *  - 표현이 길다
+     */
+    ds.tables["Area_code"].columns.add("value");
+    ds.tables["Area_code"].columns.add("code");
+    ds.tables["Area_code"].columns.add("class");
+
+    dr = dt1.newRow();
+    dr["value"] = '전국';
+    dr["code"] = 'A01';
+    dr["class"] = '.top';
+    dt1.rows.add(dr);
+    dr = dt1.newRow();
+    dr["value"] = '서울';
+    dr["code"] = 'A02';
+    dr["class"] = '.bottom';
+    dt1.rows.add(dr);    
+
+</script>
