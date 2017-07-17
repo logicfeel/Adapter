@@ -55,6 +55,7 @@
         {name: "p2_name", selector: "p input[value]"},
         {name: "p3_name", selector: "span", link: CAd_sub /* 링크 속성 삽입 위치 TODO: 검토 */ },
         {name: "p4_name", selector: "p", regexp: /$""/ },
+        {name: "p4_name", selector: "div", slot: ObjectContainer }
     ]);
 
     CD3.tables["body"].column.setSlot("td", "td", CAd_sub );
