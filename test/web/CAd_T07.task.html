@@ -146,7 +146,7 @@
 // }
 
 {
-    var TS = new TemplateSlotElement(null, 'tempSlot');
+    var TS = new TemplateSlot(null, 'tempSlot');
     TS.import("#temp_2");
     // (선택자 [, 슬롯 | 서브슬롯])
     TS.setSlot("ul", "li");     // 동일한 구조 슬롯
@@ -208,7 +208,7 @@
     }
 }
 {
-    var TS = new TemplateSlotElement(null, '#temp_00');
+    var TS = new TemplateSlot(null, '#temp_00');
      TS.setSlot("ul", [
         { name: "p1_name", selector: "p" },
         { name: "p2_name", selector: "p input[value]" },
