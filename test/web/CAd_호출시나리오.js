@@ -42,16 +42,59 @@
 }
 {
     /**
+     * 테이블 매핑 매핑
+     */
+    CAd.tableMapping.add("M01_Meb", "T_Type");
+}
+{
+    /**
      * 컬럼 매핑
      */
-    CAd.tables["Ad_Meb"].columnMapping.add("p_name", "s_name");
+    CAd.tables["M01_Meb"].columnMapping.add("p_name", "s_name");
+    // REVIEW: 컬럼 매핑 vs 슬롯매핑 뭐가 필요한지 검토? = > 컬럼만
+}
+{
+    /**
+     * 객체 슬롯
+     * TODO: 세부적으로 속성명이랑 검토 필요
+     */
+    var obj = {
+        name: "value",
+        attr: {
+            type: "String",
+            value: "K"
+        }
+    };
+
+     var oc = new ObjectContainer("선택자");
+    
+    oc.setObjectSlot("시작위치", {
+        name: "p_name",
+        attr: "radio",
+        slot: {
+            template: "#선택자",
+            start: "p",
+            attr: "type ?"
+        },
+        link: {
+            container: CAd,
+            table: "Member",
+            adpter: "Ad_Member",
+            refdata: this
+        },
+        callback: function() {
+
+        },
+        seletor: "p input",
+        idx: 1
+    });
+
+    var elem = oc.getContainer(obj);    // 컨테이너 얻기
 
     /**
-     * 객컨테이너 슬롯명 매핑
+     * 전역 속성 등록
      */
-    TS.slotMapping.add("p1_name", "s1_name");   // <== 유력
-
-    // REVIEW: 컬럼 매핑 vs 슬롯매핑 뭐가 필요한지 검토?
+    CAd.public.push(oc);
 }
 {
     // 레코드 단일 슬롯
@@ -62,11 +105,12 @@
 
     // 컬럼 복합 슬롯
 
-    // 객체 슬롯
+    // 
 
-    // 전역 속성 등록
-
-    // 레코드수 제한  : isSingle  => limitRow  로우수 제한
+    /**
+     * 레코드수 제한  : isSingle  => limitRow  로우수 제한
+     * maxRow : 제한 갯수만 표현할지 vs 갯수를 검사 할지 ?  아마도 객수표시 제한이 맞을듯
+     */
 
     // 컨테이너 설정 (가져오기)
 
@@ -92,4 +136,49 @@
      * update 동시 업데이터
      * 
      */
+}
+{
+    // 일반 객체
+    var obj = {
+        name: "Kim",
+        attr: { type: "String", default: "A"},
+        list: [1, 2, 3]
+    };
+
+
+    // 객체 컨테이너 
+     var oc = new ObjectContainer("선택자");
+    
+    oc.setObjectSlot("시작위치", {
+        /**
+         * 사용자 정의 임의 명칭
+         */
+        name: "Kim",                   
+        attr: {type: "String"},
+
+        selector: "p input",
+        
+        link: {
+            container: CAd,
+            table: "Member",
+            adpter: "Ad_Member",
+            refdata: this
+        },
+        callback: function() {
+
+        },
+
+        value: this.link,
+        slot: {
+            template: "#선택자",
+            start: "p",
+            attr: "type ?"
+        },
+
+        idx: 1
+    });
+    
+}
+{
+    
 }
