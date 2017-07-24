@@ -3,28 +3,42 @@
     var ds = new DataSet("ds_Code");
     ds.tables.add("Area");
     ds.tables.add("Sex");
+    ds.tables.add("Job");
 }
 {
     // ######################################
     // 입력 양식 컨테이너 
     var CD_Form = new ContainerAdapter("div", "#for_list"); 
 
-    // 타입: 라디오(지역정보)
-    CD_Form.setTableSlot("radio", "td");   
+    CD.setTableSlot(ds, [
+        {
+            table: "Code_Area",
+            name: "Area",
+            selector: "td"      /* <= 이부분이 없으면 (메인에) 삽입이 안됨 */
+        },
+        {
+            attr: {form: "select"},
+            selector: "td select"
+        },
+    ]);
+
     CD_Form.tables["radio"].column.setSlot("td", "td");
 
-    CD_Form.setTableSlot("selectbox", "tbody");   
-    CD_Form.tables["selectbox"].column.setSlot("td", "td");
-    CD_Form.tables["selectbox"].addEventListener("td input", "click", function(e) {
+    CD_Form.setTableSlot("select", "tbody");   
+    CD_Form.tables["select"].column.setSlot("td", "td");
+    CD_Form.tables["select"].addEventListener("td input", "click", function(e) {
         console.log('a');
     });
+
+    /**
+     * TODO: !! 이슈 : 정적슬롯과 동적슬롯의 경계가 모호해짐 정확성 필요
+     * TODO: 패키지별로 로딩하는 자동 로딩 부분이 필요
+     */
     //
+}
+{
     // ######################################
-
-    // CD2.update(ds, "Area");  
-    CD_Form.bind(ds, "Area", "radio");       // <== 묶어주는 방식이 맞을듯
-    CD_Form.bind(ds, "Sex", "selectbox");       // <== 묶어주는 방식이 맞을듯
-
+    // 강제 지정 없어도됨
     CD_Form.linkMapping.add("Area", {name: "p1_name"});
     CD_Form.linkMapping.add("Sex", {attr: {type:"form"}});
 }
