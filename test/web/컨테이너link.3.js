@@ -52,7 +52,7 @@
         {
             name: "p1_name", 
             selector: "p1",
-            link: CD_Form
+            link: CD_Form.tables["select"]
         },
         {
             name: "p2_name", 
