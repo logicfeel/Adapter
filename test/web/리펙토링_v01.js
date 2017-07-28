@@ -98,7 +98,7 @@
             container: "head",
             name: "Area",       /* 이름을 테이블명을 직접지정 */
             table: ds.tables["Area"],
-            element: elem,
+            element: elem, /* <= 이부분은 필요없을 듯 put 으로 대체 */
             mapping: {
                 column: {attr: {type: "F_select"}},
                 row: {attr: {type: "F_select"}},
@@ -111,7 +111,7 @@
             table: ds.tables["Job"],
             selector: "#bcode"
         },
-    ], "#put1");
+    ], "#put1"); /* <= 이부분은 전체(CAd) put 위치  */
 
     cAd.tables["Job"].dataBind();       // 테이블 바인딩 
     cAd.dataBind();                     // 전체 바인딩
@@ -137,7 +137,7 @@
             container: "head",
             attr: {type: "select"},
             /* 아래것중 적당한것 선택  생각해봄 */
-            selector: "#abc",  
+            selector: "#abc",   /* <= 이부분은 필요없을 듯 put 으로 대체 */
             put: "#abc",
         }
     ]);
@@ -202,11 +202,19 @@
     /* 매핑정보 데이터 초기화 */
     cAd.clearMapping();
 
+    cAd.clearDataContainer();
     /**
      * 사용 컨테이너
      */
     var CD = new ContainerAdapter(); 
     CD.setContainer("MemReg", "tbody");   
+    /*
+    TODO: 아래 적당한 이름으로 리펙토링 필요?
+    CD.dataTable["MemReg"].row;
+    CD.dataContainer["MemReg"].row;
+    CD.data["MemReg"].row;
+    CD.tables["MemReg"].row;
+    */
     CD.container["MemReg"].column.setSlot("td",  [
         {
             name: "p1_name", 
