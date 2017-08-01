@@ -219,13 +219,23 @@
         {
             name: "p1_name", 
             selector: "p1",
-            /* ds 직접 지정 방식 */
+            /* ds 직접 지정 방식-1 */
             link: {         
                 table: ds.tables['Job'],
                 container: {
                     object: cAd,
                     name: 'head'
                 }
+            }
+        },
+        {
+            name: "p1_name", 
+            selector: "p1",
+            /* ds 직접 지정 방식-2 */
+            link: {         
+                table: ds.tables['Job'],
+                object: cAd,
+                container: 'head'
             }
         },
         {
