@@ -119,7 +119,7 @@
     cAd_Code.setContainer("checkbox");
     cAd_Code.setContainer("textarea");
     
-    cAd_Code.tableSlot(ds, [
+    cAd_Code.tableSlot(ds_code, [
         // ds table 갯수만큼 조건 검사함 생성함
         {
             container: "select",
@@ -212,24 +212,27 @@
     }, "load");
     
     // 목록      ==================================
-    // 해더 없는 경우 + 동적 컬럼 형식
-    cAd_ListSrh.setContainer("List_S", "#list");
-    cAd_ListSrh.containers["List_S"].row.setSlot("tr");
-    cAd_ListSrh.containers["List_S"].column.setSlot("th", "th");
-    cAd_ListSrh.containers["List_S"].column.callback = function(obj)  {
-        // 리스트 바인딩별로 세부 속성 설정
-        if (rowData.column.name === this.refRow.value) {
-                rowData.setAttrabute('selected', "");
-        } 
-    };
-    cAd_ListSrh.addEvent(function(callObj) {
-        cAd_ListSrh.update(callObj, "Notice");
-    }, "list_bind");
-
+    {
+        // 해더 없는 경우 + 동적 컬럼 형식
+        cAd_ListSrh.setContainer("List_S", "#list");
+        cAd_ListSrh.containers["List_S"].row.setSlot("tr");
+        cAd_ListSrh.containers["List_S"].column.setSlot("th", "th");
+        cAd_ListSrh.containers["List_S"].column.callback = function(obj)  {
+            // 리스트 바인딩별로 세부 속성 설정
+            if (rowData.column.name === this.refRow.value) {
+                    rowData.setAttrabute('selected', "");
+            } 
+        };
+        cAd_ListSrh.addEvent(function(callObj) {
+            cAd_ListSrh.update(callObj, "Notice");
+        }, "list_bind");
+    }
+{
     // 컨테이너 로딩 형식
     cAd_ListSrh.setContainer("List_S2", "#list");
     // REVIEW: 리크에 매핑 정보 head, list 매필 설정 하던지.. 속성타입으로 매핑하던지
     cAd.containers["List_S2"].link = cAd_headList;
+}
 
     // 페이지     ==================================
     cAd_ListSrh.setContainer("Page_S", "#page");
