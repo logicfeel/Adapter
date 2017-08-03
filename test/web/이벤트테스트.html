@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<p id="demo" onclick="myFunction(11, 22)">요소와 함수가 완전 분리됨</p>
+
+<p  onclick="myFunction.call(this, 11, 22)">함수의 this = 요소</p>
+
+<p  id="lis" >함수의 첫번째 파라메터 e = e.srcElement 가르킴</p>
+
+<p  onclick="var k = 2" >함수의 첫번째 파라메터 e = e.srcElement 가르킴</p>
+
+<p  id="p3">p3</p>
+
+
+<script>
+function myFunction(a, b) {
+    document.getElementById("demo").style.color = "red";
+    document.getElementById("demo").innerText = 'ddd'+a;
+}
+
+function myFunction2(a, b) {
+    alert(2);
+}
+
+var elem = document.querySelector("#lis");
+elem.addEventListener("click", myFunction);
+var elem = document.querySelector("#lis");
+elem.addEventListener("click", myFunction2);
+
+// var elem = document.querySelector("#p3");
+elem.onclick = function(e, ee) {
+    alert(333)
+ };
+
+elem.click(55);
+/**
+ * 호출한 결과를 클릭에 삽입함 
+ * !! 리턴타입을 등록되므로 클릭시에는 아무 동작 없음
+ */
+// elem.onclick = myFunction2()    
+</script>
+
+</body>
+</html>
