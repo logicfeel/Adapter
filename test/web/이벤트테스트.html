@@ -1,20 +1,23 @@
 <!DOCTYPE html>
 <html>
 <body>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <p id="demo" onclick="myFunction(11, 22)">요소와 함수가 완전 분리됨</p>
 
 <p  onclick="myFunction.call(this, 11, 22)">함수의 this = 요소</p>
 
 <p  id="lis" >함수의 첫번째 파라메터 e = e.srcElement 가르킴</p>
 
-<p  onclick="var k = 2" >함수의 첫번째 파라메터 e = e.srcElement 가르킴</p>
+<p  id="p4" onclick="p777()" >함수의 첫번째 파라메터 e = e.srcElement 가르킴</p>
 
 <p  id="p3">p3</p>
 
+<p  id="p5">p5</p>
+
+
 
 <script>
-function myFunction(a, b) {
+function myFunction(a = 1, b=2) {
     document.getElementById("demo").style.color = "red";
     document.getElementById("demo").innerText = 'ddd'+a;
 }
@@ -25,7 +28,7 @@ function myFunction2(a, b) {
 
 var elem = document.querySelector("#lis");
 elem.addEventListener("click", myFunction);
-var elem = document.querySelector("#lis");
+// var elem = document.querySelector("#lis");
 elem.addEventListener("click", myFunction2);
 
 // var elem = document.querySelector("#p3");
@@ -33,12 +36,33 @@ elem.onclick = function(e, ee) {
     alert(333)
  };
 
-elem.click(55);
+// elem.click(55);
 /**
  * 호출한 결과를 클릭에 삽입함 
  * !! 리턴타입을 등록되므로 클릭시에는 아무 동작 없음
  */
-// elem.onclick = myFunction2()    
+var p3 = document.querySelector("#p3");
+// p3.onclick = "myFunction2()";
+p3.onclick = function(e, ee) {
+    alert(555);
+ };
+
+ function p333(e, ee) {
+    alert(666);
+ }
+
+ function p777(e, ee) {
+    alert(777);
+ }
+
+p3.onclick = p333;
+
+var p4 = document.querySelector("#p4");
+
+    $("#p5").click(function(e){
+        $(this).hide();         // this 는 대상을 가르킴
+    });
+
 </script>
 
 </body>
