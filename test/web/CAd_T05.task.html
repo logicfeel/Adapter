@@ -43,10 +43,10 @@
     // ds 생성
     var ds = new DataSet("ds");
 
-    var dt1 = ds.tables.add("body"); // 2방식 : 직접 생성 방식 : 테이블
+    var dt1 = ds.tables.add("Table1"); // 2방식 : 직접 생성 방식 : 테이블
 
-    ds.tables["body"].columns.add("p1_name");
-    ds.tables["body"].columns.add("p2_name");
+    ds.tables["Table1"].columns.add("p1_name");
+    ds.tables["Table1"].columns.add("p2_name");
 
     var dr = null;
 
@@ -68,10 +68,10 @@
     
     // dt1.rows.removeAt(1);
 
-    var dt2 = ds.tables.add("head"); // 2방식 : 직접 생성 방식 : 테이블
+    var dt2 = ds.tables.add("H_Table"); // 2방식 : 직접 생성 방식 : 테이블
 
-    ds.tables["head"].columns.add("p1_nm");
-    ds.tables["head"].columns.add("p2_nm");
+    ds.tables["H_Table"].columns.add("p1_nm");
+    ds.tables["H_Table"].columns.add("p2_nm");
 
     var dr = null;
 
@@ -83,10 +83,10 @@
 
     var ds2 = new DataSet("ds_li");
 
-    var dt3 = ds2.tables.add("list"); // 2방식 : 직접 생성 방식 : 테이블
+    var dt3 = ds2.tables.add("L_Table"); // 2방식 : 직접 생성 방식 : 테이블
 
-    ds2.tables["list"].columns.add("p1_name");
-    ds2.tables["list"].columns.add("p2_name");
+    ds2.tables["L_Table"].columns.add("p1_name");
+    ds2.tables["L_Table"].columns.add("p2_name");
 
     var dr = null;
 
@@ -102,24 +102,25 @@
 
 }
 {
+    //-----------------------------------------------------------------
     // 컬럼 콜백
     var CD1 = new ContainerAdapter("#put_1", "#temp_1"); 
-    CD1.setTableSlot("head", "thead");   
-    CD1.tables["head"].record.setSlot("tr");
-    CD1.tables["head"].column.setSlot("th"); 
+    CD1.setTableSlot("H_Table", "thead");   
+    CD1.tables["H_Table"].record.setSlot("tr");
+    CD1.tables["H_Table"].column.setSlot("th"); 
 
-    CD1.setTableSlot("body", "tbody");   
-    CD1.tables["body"].record.setSlot("tr");
-    CD1.tables["body"].column.setSlot("td"); 
+    CD1.setTableSlot("Table1", "tbody");   
+    CD1.tables["Table1"].record.setSlot("tr");
+    CD1.tables["Table1"].column.setSlot("td"); 
 
-    CD1.setTableSlot("list", "ul");   
-    CD1.tables["list"].record.setSlot("ul");
-    CD1.tables["list"].column.setSlot("li"); 
+    CD1.setTableSlot("L_Table", "ul");   
+    CD1.tables["L_Table"].record.setSlot("ul");
+    CD1.tables["L_Table"].column.setSlot("li"); 
 
 
-    CD1.update(ds, "head");
-    CD1.update(ds, "body");
-    CD1.update(ds2, "list");
+    CD1.update(ds, "H_Table");
+    CD1.update(ds, "Table1");
+    CD1.update(ds2, "L_Table");
 }
 
 console.log('-End-');

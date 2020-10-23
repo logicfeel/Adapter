@@ -34,10 +34,10 @@
     // ds 생성
     var ds = new DataSet("ds");
 
-    var dt1 = ds.tables.add("body"); // 2방식 : 직접 생성 방식 : 테이블
+    var dt1 = ds.tables.add("Table1"); // 2방식 : 직접 생성 방식 : 테이블
 
-    ds.tables["body"].columns.add("p1_name");
-    ds.tables["body"].columns.add("p2_name");
+    ds.tables["Table1"].columns.add("p1_name");
+    ds.tables["Table1"].columns.add("p2_name");
 
     var dr = null;
 
@@ -58,49 +58,66 @@
     dt1.rows.add(dr);
 }
 {
+    //-----------------------------------------------------------------
     // 생성자 ( put선택자, 템플릿선택자 )
     var CD = new ContainerAdapter("div", "#temp_1"); 
 
     // 테이블슬롯설정 ( 테이블명, 테이블선택자 )
-    CD.setTableSlot("body", "tbody");   
+    CD.setTableSlot("Table1", "tbody");   
 
     // XX슬롯설정 ( 선택자 [, 슬롯선택자] )
-    CD.tables["body"].record.setSlot("tr");
-    CD.tables["body"].column.setSlot("td", "td b");
+    CD.tables["Table1"].record.setSlot("tr");
+    CD.tables["Table1"].column.setSlot("td", "td b");
 
     // 컨테이너 갱신 ( 데이터셋, 테이블명 [,매핑테이블명] )
-    CD.update(ds, "body");
+    CD.update(ds, "Table1");
 }
 {
+    //-----------------------------------------------------------------
     // 생성자 ( put선택자, 템플릿선택자 )
     var CD2 = new ContainerAdapter("div", "#temp_1"); 
 
     // 테이블슬롯설정 ( 테이블명, 테이블선택자 )
-    CD2.setTableSlot("body", "tbody");   
+    CD2.setTableSlot("Table1", "tbody");   
 
     // XX슬롯설정 ( 선택자 [, 슬롯선택자] )
-    CD2.tables["body"].record.setSlot("tr");
-    CD2.tables["body"].column.setSlot("td", "td b input[value]");
+    CD2.tables["Table1"].record.setSlot("tr");
+    CD2.tables["Table1"].column.setSlot("td", "td b input[value]");
 
     // 컨테이너 갱신 ( 데이터셋, 테이블명 [,매핑테이블명] )
-    CD2.update(ds, "body");
+    CD2.update(ds, "Table1");
 }
 {
+    //-----------------------------------------------------------------
     // 생성자 ( put선택자, 템플릿선택자 )
     // var CD2 = new ContainerAdapter("#div2", "#temp_1"); 
     var CD3 = new ContainerAdapter("div", "#temp_1"); 
 
     // 테이블슬롯설정 ( 테이블명, 테이블선택자 )
-    CD3.setTableSlot("body", "tbody");   
+    CD3.setTableSlot("Table1", "tbody");   
 
     // XX슬롯설정 ( 선택자 [, 슬롯선택자, callback] )
-    CD3.tables["body"].record.setSlot("tr");
-    CD3.tables["body"].column.setSlot("td", "td");
+    CD3.tables["Table1"].record.setSlot("tr");
+    CD3.tables["Table1"].column.setSlot("td", "td");
 
     // 컨테이너 갱신 ( 데이터셋, 테이블명 [,매핑테이블명] )
-    CD3.update(ds, "body");
+    CD3.update(ds, "Table1");
 }
 
+/**
+ * 요구사항 정리 
+ **/
+var CD4 = new ContainerAdapter("div", "#temp_1");
+CD4.setTableSlot("Table1", "tbody");
+
+CD4.table["Table1"].column.setBaseSlot("td", "td");                         // 기본 슬롯 설정
+CD4.table["Table1"].column.setSlot("td", {name: "p1_name", selector: "p"}); // 사용자 슬롯 설정
+
+// 속성값 연결 : 인덱스키 설정은 this 에서 받을수 있게..
+CD4.table["Table1"].column.setAttribute("ntc_idx");
+
+// 컨테이너 갱신 ( 데이터셋, 테이블명 [,매핑테이블명] )
+CD4.update(ds["Entity1"], "Table1");
 
 console.log('-End-');
 </script>

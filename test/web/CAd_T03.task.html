@@ -53,10 +53,10 @@
     // ds 생성
     var ds = new DataSet("ds");
 
-    var dt1 = ds.tables.add("body"); // 2방식 : 직접 생성 방식 : 테이블
+    var dt1 = ds.tables.add("Table1"); // 2방식 : 직접 생성 방식 : 테이블
 
-    ds.tables["body"].columns.add("p1_name");
-    ds.tables["body"].columns.add("p2_name");
+    ds.tables["Table1"].columns.add("p1_name");
+    ds.tables["Table1"].columns.add("p2_name");
 
     var dr = null;
 
@@ -77,45 +77,49 @@
     dt1.rows.add(dr);
 }
 {
+    //-----------------------------------------------------------------
     // 1. 레코드-O | 레코드슬롯-X | 컬럼슬롯-O
     var CD1 = new ContainerAdapter("#put_3", "#temp_1"); 
 
-    CD1.setTableSlot("body", "tbody");   
-    CD1.tables["body"].record.setSlot("tr");
-    CD1.tables["body"].column.setSlot("td",  [
+    CD1.setTableSlot("Table1", "tbody");   
+    CD1.tables["Table1"].record.setSlot("tr");
+    CD1.tables["Table1"].column.setSlot("td",  [
         {name: "p1_name", selector: "p"},
         {name: "p2_name", selector: "p input[value]"}
     ]);
-    CD1.update(ds, "body");
+    CD1.update(ds, "Table1");
 }
 {
+    //-----------------------------------------------------------------
     // 2. 레코드-O | 레코드슬롯-X | 컬럼슬롯-X
     var CD2 = new ContainerAdapter("#put_4", "#temp_1"); 
 
-    CD2.setTableSlot("body", "tbody");   
-    CD2.tables["body"].record.setSlot("tr");
-    CD2.tables["body"].column.setSlot("td", "td");
-    CD2.update(ds, "body");
+    CD2.setTableSlot("Table1", "tbody");   
+    CD2.tables["Table1"].record.setSlot("tr");
+    CD2.tables["Table1"].column.setSlot("td", "td");
+    CD2.update(ds, "Table1");
 }
 {
+    //-----------------------------------------------------------------
     // 3. 레코드-X | 레코드슬롯-X | 컬럼슬롯-O
     var CD3 = new ContainerAdapter("#put_5", "#temp_1"); 
 
-    CD3.setTableSlot("body", "tbody tr");   
-    CD3.tables["body"].column.setSlot("td", [
+    CD3.setTableSlot("Table1", "tbody tr");   
+    CD3.tables["Table1"].column.setSlot("td", [
         {name: "p1_name", selector: "p"},
         {name: "p2_name", selector: "p input[value]"}
     ]);
-    CD3.update(ds, "body");
+    CD3.update(ds, "Table1");
 }
 
 {
-    // 4. 레코드-X | 레코드슬롯-X | 컬럼슬롯-X
+    //-----------------------------------------------------------------
+    // 4. 레코드-X | 레코드슬롯-X | 컬럼슬롯-X  : 컬럼설절은 하나 슬롯은 사용안함
     var CD4 = new ContainerAdapter("#put_6", "#temp_1"); 
 
-    CD4.setTableSlot("body", "tbody tr");   
-    CD4.tables["body"].column.setSlot("td", "td");
-    CD4.update(ds, "body");
+    CD4.setTableSlot("Table1", "tbody tr");   
+    CD4.tables["Table1"].column.setSlot("td", "td");
+    CD4.update(ds, "Table1");
 }
 
 console.log('-End-');

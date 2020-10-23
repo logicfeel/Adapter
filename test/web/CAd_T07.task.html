@@ -58,10 +58,10 @@
     // ds 생성
     var ds = new DataSet("ds");
 
-    var dt1 = ds.tables.add("body"); // 2방식 : 직접 생성 방식 : 테이블
+    var dt1 = ds.tables.add("Table1"); // 2방식 : 직접 생성 방식 : 테이블
 
-    ds.tables["body"].columns.add("p1_name");
-    ds.tables["body"].columns.add("p2_name");
+    ds.tables["Table1"].columns.add("p1_name");
+    ds.tables["Table1"].columns.add("p2_name");
 
     var dr = null;
 
@@ -90,32 +90,32 @@
     CD1.putElement = document.querySelector("#put_1");
     CD1.import(document.querySelector("#temp_1"));
 
-    CD1.setTableSlot("body", "tbody");   
-    CD1.tables["body"].maxRow = 1;              // 주의! 1Row
-    CD1.tables["body"].record.setSlot("tr");
-    CD1.tables["body"].column.setSlot("td", "td");
-    CD1.update(ds, "body");
+    CD1.setTableSlot("Table1", "tbody");   
+    CD1.tables["Table1"].maxRow = 1;              // 주의! 1Row
+    CD1.tables["Table1"].record.setSlot("tr");
+    CD1.tables["Table1"].column.setSlot("td", "td");
+    CD1.update(ds, "Table1");
 }
 // ###########################################
 {
     // 생성자 ( put선택자, 템플릿선택자 )
     var CD2 = new ContainerAdapter("#put_2", "#temp_1"); 
     
-    CD2.setTableSlot("body", "tbody");   
-    CD2.tables["body"].record.setSlot("tr");
-    CD2.tables["body"].column.setSlot("td", "td");
-    CD2.update(ds, "body");
+    CD2.setTableSlot("Table1", "tbody");   
+    CD2.tables["Table1"].record.setSlot("tr");
+    CD2.tables["Table1"].column.setSlot("td", "td");
+    CD2.update(ds, "Table1");
 }
 // ###########################################
 {
     // 생성자 ( put선택자, 템플릿선택자 )
     var CD3 = new ContainerAdapter("#put_3", "#temp_1"); 
  
-    CD3.setTableSlot("body", "tbody tr td");
-    CD3.tables["body"].record.importSlot("#temp_2", "ul");
-    CD3.tables["body"].column.importSlot("#temp_2", "li");
+    CD3.setTableSlot("Table1", "tbody tr td");
+    CD3.tables["Table1"].record.importSlot("#temp_2", "ul");
+    CD3.tables["Table1"].column.importSlot("#temp_2", "li");
 
-    CD3.update(ds, "body");
+    CD3.update(ds, "Table1");
 }
 
 // // ###########################################
@@ -123,15 +123,15 @@
 //     // 생성자 ( put선택자, 템플릿선택자 )
 //     var CD4 = new ContainerAdapter("#put_3", "#temp_1"); 
     
-//     // CD3.setTableSlot("body", "tbody");   
+//     // CD3.setTableSlot("Table1", "tbody");   
 
-//     // CD3.tables["body"].column.importSlot(document.querySelector("#temp_2"), "li");
-//     // CD3.tables["body"].column.setSlot("ul", "li");
-//     // CD3.tables["body"].column.setSlot("b");
+//     // CD3.tables["Table1"].column.importSlot(document.querySelector("#temp_2"), "li");
+//     // CD3.tables["Table1"].column.setSlot("ul", "li");
+//     // CD3.tables["Table1"].column.setSlot("b");
 
-//     CD4.setTableSlot("body", "tbody tr");
-//     CD4.tables["body"].record.setSlot("td");
-//     CD4.tables["body"].column.importSlot("#temp_2", "li", null,
+//     CD4.setTableSlot("Table1", "tbody tr");
+//     CD4.tables["Table1"].record.setSlot("td");
+//     CD4.tables["Table1"].column.importSlot("#temp_2", "li", null,
 //         function(pValue, pIndex, pDataRow, pSlotElem) {
 
 //             var column = pDataRow._dataTable.columns[pIndex];
@@ -142,7 +142,7 @@
 //     );
 
 
-//     CD3.update(ds, "body");
+//     CD3.update(ds, "Table1");
 // }
 
 {

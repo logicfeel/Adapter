@@ -37,10 +37,10 @@
 {
     var ds2 = new DataSet("ds_li");
 
-    var dt3 = ds2.tables.add("list"); // 2방식 : 직접 생성 방식 : 테이블
+    var dt3 = ds2.tables.add("L_Table"); // 2방식 : 직접 생성 방식 : 테이블
 
-    ds2.tables["list"].columns.add("p1_name");
-    ds2.tables["list"].columns.add("p2_name");
+    ds2.tables["L_Table"].columns.add("p1_name");
+    ds2.tables["L_Table"].columns.add("p2_name");
 
     var dr = null;
 
@@ -60,13 +60,13 @@
     // 컬럼 콜백
     var CD1 = new ContainerAdapter("#put_1", "#temp_1"); 
 
-    CD1.setTableSlot("list", "ul");   
-    CD1.tables["list"].record.setSlot("ul");
-    CD1.tables["list"].column.setSlot("li", null, 
+    CD1.setTableSlot("L_Table", "ul");   
+    CD1.tables["L_Table"].record.setSlot("ul");
+    CD1.tables["L_Table"].column.setSlot("li", null, 
         function(pValue, pIndex, pRow, pSlotElem) {
             pSlotElem.onclick = function() {
                 dt3.rows.remove(pRow);
-                CD1.update(ds2, "list");
+                CD1.update(ds2, "L_Table");
             };
             return document.createTextNode(pValue);
         }    
@@ -75,7 +75,7 @@
         pDataSet.acceptChanges(); 
     }
     
-    CD1.update(ds2, "list");
+    CD1.update(ds2, "L_Table");
 }
 {
     var btn1 =document.querySelector("#btn_1");
@@ -86,31 +86,31 @@
         dr["p2_name"] = '2번 추가-' + cnt_1;
         dt3.rows.add(dr);
         cnt_1++;
-        CD1.update(ds2, "list");
+        CD1.update(ds2, "L_Table");
     };
 }
 // ###########################################
 {
     var ds1 = new DataSet("ds_li");
-    var dt2 = ds1.tables.add("list2");
-    ds1.tables["list2"].columns.add("p1_name");
-    ds1.tables["list2"].columns.add("p2_name");    
+    var dt2 = ds1.tables.add("L_Table2");
+    ds1.tables["L_Table2"].columns.add("p1_name");
+    ds1.tables["L_Table2"].columns.add("p2_name");    
 }
 {
     // 컬럼 콜백 (호출구조 요약형)
     var CD2 = new ContainerAdapter("#put_2", "#temp_1"); 
-    CD2.setTableSlot("list", "ul");
+    CD2.setTableSlot("L_Table", "ul");
 
-    CD2.tables["list"].record.setSlot("ul");
-    CD2.tables["list"].column.setSlot("li");
-    CD2.tables["list"].column.callback = function(pValue, pIndex, pDataRow, pSlotElem, pDataSet) {
+    CD2.tables["L_Table"].record.setSlot("ul");
+    CD2.tables["L_Table"].column.setSlot("li");
+    CD2.tables["L_Table"].column.callback = function(pValue, pIndex, pDataRow, pSlotElem, pDataSet) {
         pSlotElem.onclick = function(event) {
             pDataRow._dataTable.rows.remove(pDataRow);   // row 삭제
-            CD2.update(pDataRow._dataTable._dataSet, "list2", "list");
+            CD2.update(pDataRow._dataTable._dataSet, "L_Table2", "L_Table");
         };
     };
 
-    CD2.updateCommit(ds1, "list2", "list");
+    CD2.updateCommit(ds1, "L_Table2", "L_Table");
     CD2.initTableMapping(); 
 }
 {
@@ -122,7 +122,7 @@
         dr["p2_name"] = '2번 추가-' + cnt_2;
         dt2.rows.add(dr);
         cnt_2++;
-        CD2.update(ds1, "list2", "list");
+        CD2.update(ds1, "L_Table2", "L_Table");
     };
 }
 
